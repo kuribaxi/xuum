@@ -85,11 +85,30 @@
             padding:12px;
             text-align:center;
             flex-shrink:0;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
         }
         .player-header h2{
             color:#4ecdc4;
             font-size:1.5em;
             margin:0;
+            flex:1;
+        }
+        .pip-btn {
+            background: #4ecdc4;
+            color: #012;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+        .pip-btn:hover {
+            background: #45b7aa;
         }
         #player{
             flex:1;
@@ -141,6 +160,11 @@
             .header h1{font-size:1.5em}
             .header p{font-size:0.9em}
             .warning{font-size:0.8em}
+            
+            .pip-btn {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
 
             .sidebar .section h3{
                 display:block;
@@ -179,6 +203,10 @@
             .header{padding:10px}
             .header h1{font-size:1.3em}
             .player-header h2{font-size:1.3em}
+            .pip-btn {
+                padding: 5px 8px;
+                font-size: 0.75em;
+            }
             .channel{
                 padding:7px 9px;
                 font-size:0.9em;
@@ -210,13 +238,16 @@
     <div class="player-area">
         <div class="player-header">
             <h2 id="channelName">TV1</h2>
+            <button class="pip-btn" onclick="togglePictureInPicture(event)">📺 PiP</button>
         </div>
         <iframe
             id="player"
-            src="https://m.telewebion.com/embed/live/tv1"
+            src="https://m.telewebion.com/embed/live/tv1?autoplay=1&mute=0"
             style="width:100%;height:100%;border:none;"
             allowfullscreen
-            allow="autoplay; encrypted-media">
+            allow="autoplay *; encrypted-media *; picture-in-picture *; fullscreen *"
+            loading="eager"
+            sandbox="allow-scripts allow-same-origin allow-presentation">
         </iframe>
     </div>
 
@@ -313,6 +344,7 @@
 <script>
     const FAV_KEY = 'xom_favs';
     let activeBtn = null;
+    let pipActive = false;
 
     function getFavs() {
         try {
@@ -406,11 +438,53 @@
         return m ? m[2] : null;
     }
 
+    async function togglePictureInPicture(event) {
+        const player = document.getElementById('player');
+        const btn = event ? event.target : document.querySelector('.pip-btn');
+        
+        try {
+            if (document.pictureInPictureElement) {
+                // Avsluta PiP
+                await document.exitPictureInPicture();
+                pipActive = false;
+                btn.textContent = '📺 PiP';
+            } else {
+                // Starta PiP
+                await player.requestPictureInPicture();
+                pipActive = true;
+                btn.textContent = '🖥️ Normal';
+            }
+        } catch (e) {
+            // Fallback: öppna i nytt fönster som också uppdateras
+            window.open(player.src, '_blank');
+        }
+    }
+
     function load(id, name, btn) {
         const player = document.getElementById('player');
         const nameEl = document.getElementById('channelName');
 
-        player.src = `https://m.telewebion.com/embed/live/${id}`;
+        // Stark autoplay + tvinga reload för direkt uppspelning
+        const newSrc = `https://m.telewebion.com/embed/live/${id}?autoplay=1&mute=0&start=0&_=${Date.now()}`;
+        
+        // OM PiP är aktiv → uppdatera direkt i PiP-fönstret
+        if (pipActive && document.pictureInPictureElement) {
+            player.src = newSrc;
+            // Försök att tvinga reload i PiP-fönstret
+            try {
+                if (player.contentWindow && player.contentWindow.location) {
+                    player.contentWindow.location.replace(newSrc);
+                }
+            } catch (e) {
+                // Cross-origin error, fortsätt normalt
+                player.src = newSrc;
+                player.src = newSrc; // Dubbel set för att tvinga reload
+            }
+        } else {
+            player.src = newSrc;
+            player.src = newSrc; // Dubbel set för att tvinga reload
+        }
+        
         nameEl.textContent = name;
 
         if (activeBtn) activeBtn.classList.remove('active');
@@ -506,6 +580,7 @@
     window.toggleFav = toggleFav;
     window.load = load;
     window.toggleSidebar = toggleSidebar;
+    window.togglePictureInPicture = togglePictureInPicture;
 </script>
 
 </body>
