@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>XOM TV – Alla Iranska Kanaler (dec 2025)</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:Arial,sans-serif;
+            background:#1a1a2e;
+            color:white;
+            display:flex;
+            flex-direction:column;
+            height:100vh;
+            overflow:hidden;
+        }
+        .header{
+            background:#16213e;
+            padding:15px;
+            text-align:center;
+            border-bottom:4px solid #4ecdc4;
+            position:relative;
+            flex-shrink:0;
+        }
+        .header h1{color:#4ecdc4;font-size:1.8em;margin:0}
+        .warning{color:#ffcc00;font-size:0.9em;margin-top:8px}
+        .container{
+            flex:1;
+            display:flex;
+            overflow:hidden;
+        }
+        .sidebar{
+            width:340px;
+            background:#0f3460;
+            overflow-y:auto;
+            padding:15px;
+            flex-shrink:0;
+        }
+        .section h3{
+            color:#4ecdc4;
+            margin:25px 0 12px 0;
+            font-size:1.2em;
+            border-bottom:2px solid #4ecdc4;
+            padding-bottom:6px;
+        }
+        .channel{
+            background:#4ecdc4;
+            color:#000;
+            padding:10px 12px;
+            margin:6px 0;
+            border-radius:10px;
+            cursor:pointer;
+            font-weight:bold;
+            transition:.18s;
+            text-align:left;
+            font-size:1em;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .channel:hover{background:#45b7aa;transform:scale(1.02)}
+        .channel.active{background:#e74c3c;color:white}
+        .channel .label{flex:1;padding-right:8px}
+        .fav{
+            background:transparent;
+            border:none;
+            font-size:1.1em;
+            cursor:pointer;
+            color:#012;
+            padding:4px;
+            line-height:1;
+        }
+        .fav.fav-active{color:#f5d259}
+        .player-area{
+            flex:1;
+            background:#000;
+            display:flex;
+            flex-direction:column;
+            min-height:0;
+            overflow:hidden;
+        }
+        .player-header{
+            background:#16213e;
+            padding:12px;
+            text-align:center;
+            flex-shrink:0;
+        }
+        .player-header h2{
+            color:#4ecdc4;
+            font-size:1.5em;
+            margin:0;
+        }
+        #player{
+            flex:1;
+            width:100%;
+            border:none;
+            min-height:0;
+            background:#000;
+        }
+
+        .menu-toggle{
+            display:none;
+            position:absolute;
+            left:12px;
+            top:12px;
+            background:#4ecdc4;
+            color:#012;
+            border:none;
+            padding:6px 10px;
+            border-radius:6px;
+            font-weight:bold;
+            cursor:pointer;
+            z-index:1000;
+        }
+
+        @media(max-width:900px){
+            .container{
+                flex-direction:column;
+                height:auto;
+                min-height:0;
+            }
+
+            .player-area{
+                flex:0 0 auto;
+                height:65vh;
+                min-height:300px;
+                max-height:calc(100vh - 40vh);
+            }
+
+            .sidebar{
+                width:100%;
+                height:35vh;
+                min-height:200px;
+                max-height:calc(100vh - 65vh);
+                overflow-y:auto;
+                padding:10px;
+                position:relative;
+            }
+
+            .header h1{font-size:1.5em}
+            .header p{font-size:0.9em}
+            .warning{font-size:0.8em}
+
+            .sidebar .section h3{
+                display:block;
+                margin:12px 0 6px 0;
+                font-size:1.1em;
+                padding-bottom:4px;
+                position:sticky;
+                top:0;
+                background:#0f3460;
+                z-index:10;
+            }
+
+            .channel{
+                margin:4px 0;
+                padding:8px 10px;
+                border-radius:8px;
+                font-size:0.95em;
+            }
+
+            .menu-toggle{
+                display:inline-block;
+            }
+        }
+
+        @media(max-width:480px){
+            .player-area{
+                height:60vh;
+                min-height:280px;
+            }
+
+            .sidebar{
+                height:40vh;
+                min-height:220px;
+            }
+
+            .header{padding:10px}
+            .header h1{font-size:1.3em}
+            .player-header h2{font-size:1.3em}
+            .channel{
+                padding:7px 9px;
+                font-size:0.9em;
+            }
+        }
+
+        @media(max-width:900px) and (orientation: landscape){
+            .player-area{
+                height:70vh;
+                min-height:250px;
+            }
+            .sidebar{
+                height:30vh;
+                min-height:180px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <button class="menu-toggle" onclick="toggleSidebar()">≡</button>
+    <h1>XOM TV</h1>
+    <p>Alla iranska TV-kanaler – fungerar perfekt</p>
+    <p class="warning">Kör via lokal server → python -m http.server</p>
+</div>
+
+<div class="container">
+    <div class="player-area">
+        <div class="player-header">
+            <h2 id="channelName">TV1</h2>
+        </div>
+        <iframe
+            id="player"
+            src="https://m.telewebion.com/embed/live/tv1"
+            style="width:100%;height:100%;border:none;"
+            allowfullscreen
+            allow="autoplay; encrypted-media">
+        </iframe>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="section" id="favSection">
+            <h3>Favoriter</h3>
+            <div id="favoritesList" style="color:#fff">Inga favoriter</div>
+        </div>
+
+        <div class="section" id="nationalSection">
+            <h3>Nationella Kanaler</h3>
+            <div class="channel active" onclick="load('tv1','TV1',this)">
+                <span class="label">TV1</span>
+                <button class="fav" onclick="toggleFav(event,'tv1','TV1',this)">☆</button>
+            </div>
+            <div class="channel" onclick="load('tv2','TV2',this)"><span class="label">TV2</span><button class="fav" onclick="toggleFav(event,'tv2','TV2',this)">☆</button></div>
+            <div class="channel" onclick="load('tv3','TV3',this)"><span class="label">TV3</span><button class="fav" onclick="toggleFav(event,'tv3','TV3',this)">☆</button></div>
+            <div class="channel" onclick="load('tv4','TV4',this)"><span class="label">TV4</span><button class="fav" onclick="toggleFav(event,'tv4','TV4',this)">☆</button></div>
+            <div class="channel" onclick="load('Tehran','Tehran',this)"><span class="label">Tehran</span><button class="fav" onclick="toggleFav(event,'Tehran','Tehran',this)">☆</button></div>
+            <div class="channel" onclick="load('nasim','NASIM',this)"><span class="label">NASIM</span><button class="fav" onclick="toggleFav(event,'nasim','NASIM',this)">☆</button></div>
+            <div class="channel" onclick="load('varzesh','VARZESH',this)"><span class="label">VARZESH (Sport)</span><button class="fav" onclick="toggleFav(event,'varzesh','VARZESH',this)">☆</button></div>
+            <div class="channel" onclick="load('irinn','IRINN / KHABAR',this)"><span class="label">IRINN / KHABAR</span><button class="fav" onclick="toggleFav(event,'irinn','IRINN / KHABAR',this)">☆</button></div>
+            <div class="channel" onclick="load('irinn2','KHABAR2',this)"><span class="label">KHABAR2</span><button class="fav" onclick="toggleFav(event,'irinn2','KHABAR2',this)">☆</button></div>
+            <div class="channel" onclick="load('ifilm','IFILM Farsi',this)"><span class="label">IFILM Farsi</span><button class="fav" onclick="toggleFav(event,'ifilm','IFILM Farsi',this)">☆</button></div>
+            <div class="channel" onclick="load('tv1plus','TV1PLUS',this)"><span class="label">TV1PLUS</span><button class="fav" onclick="toggleFav(event,'tv1plus','TV1PLUS',this)">☆</button></div>
+            <div class="channel" onclick="load('omid','OMID',this)"><span class="label">OMID</span><button class="fav" onclick="toggleFav(event,'omid','OMID',this)">☆</button></div>
+            <div class="channel" onclick="load('ifilmenglish','IFILM English',this)"><span class="label">IFILM English</span><button class="fav" onclick="toggleFav(event,'ifilmenglish','IFILM English',this)">☆</button></div>
+            <div class="channel" onclick="load('namayesh','NAMAYESH',this)"><span class="label">NAMAYESH</span><button class="fav" onclick="toggleFav(event,'namayesh','NAMAYESH',this)">☆</button></div>
+            <div class="channel" onclick="load('mostanad','MOSTANAD',this)"><span class="label">MOSTANAD</span><button class="fav" onclick="toggleFav(event,'mostanad','MOSTANAD',this)">☆</button></div>
+            <div class="channel" onclick="load('hdtest','TAMASHA',this)"><span class="label">TAMASHA</span><button class="fav" onclick="toggleFav(event,'hdtest','TAMASHA',this)">☆</button></div>
+            <div class="channel" onclick="load('amouzesh','AMOOZESH',this)"><span class="label">AMOOZESH</span><button class="fav" onclick="toggleFav(event,'amouzesh','AMOOZESH',this)">☆</button></div>
+            <div class="channel" onclick="load('salamat','SALAMAT',this)"><span class="label">SALAMAT</span><button class="fav" onclick="toggleFav(event,'salamat','SALAMAT',this)">☆</button></div>
+            <div class="channel" onclick="load('ofogh','OFOGH',this)"><span class="label">OFOGH</span><button class="fav" onclick="toggleFav(event,'ofogh','OFOGH',this)">☆</button></div>
+            <div class="channel" onclick="load('quran','QURAN TV',this)"><span class="label">QURAN TV</span><button class="fav" onclick="toggleFav(event,'quran','QURAN TV',this)">☆</button></div>
+            <div class="channel" onclick="load('pooya','POOYA & JAVANAN',this)"><span class="label">POOYA & JAVANAN</span><button class="fav" onclick="toggleFav(event,'pooya','POOYA & JAVANAN',this)">☆</button></div>
+            <div class="channel" onclick="load('javaneh','JAVANEH / KOODAK+',this)"><span class="label">JAVANEH / KOODAK+</span><button class="fav" onclick="toggleFav(event,'javaneh','JAVANEH / KOODAK+',this)">☆</button></div>
+            <div class="channel" onclick="load('sepehr','SEPEHR',this)"><span class="label">SEPEHR</span><button class="fav" onclick="toggleFav(event,'sepehr','SEPEHR',this)">☆</button></div>
+            <div class="channel" onclick="load('faratar','FARATAR',this)"><span class="label">FARATAR</span><button class="fav" onclick="toggleFav(event,'faratar','FARATAR',this)">☆</button></div>
+            <div class="channel" onclick="load('nava','NAVA',this)"><span class="label">NAVA</span><button class="fav" onclick="toggleFav(event,'nava','NAVA',this)">☆</button></div>
+            <div class="channel" onclick="load('nama','NAMA',this)"><span class="label">NAMA</span><button class="fav" onclick="toggleFav(event,'nama','NAMA',this)">☆</button></div>
+            <div class="channel" onclick="load('iribu','ROYA',this)"><span class="label">ROYA</span><button class="fav" onclick="toggleFav(event,'iribu','ROYA',this)">☆</button></div>
+            <div class="channel" onclick="load('ara','ARA',this)"><span class="label">ARA</span><button class="fav" onclick="toggleFav(event,'ara','ARA',this)">☆</button></div>
+            <div class="channel" onclick="load('iraneman','IRANEMAN',this)"><span class="label">IRANEMAN</span><button class="fav" onclick="toggleFav(event,'iraneman','IRANEMAN',this)">☆</button></div>
+            <div class="channel" onclick="load('golkhane','GOLKHANE',this)"><span class="label">GOLKHANE</span><button class="fav" onclick="toggleFav(event,'golkhane','GOLKHANE',this)">☆</button></div>
+            <div class="channel" onclick="load('negarestan','NEGARESTAN',this)"><span class="label">NEGARESTAN</span><button class="fav" onclick="toggleFav(event,'negarestan','NEGARESTAN',this)">☆</button></div>
+            <div class="channel" onclick="load('karoon','KAROON',this)"><span class="label">KAROON</span><button class="fav" onclick="toggleFav(event,'karoon','KAROON',this)">☆</button></div>
+            <div class="channel" onclick="load('sport3','TELEWEBION',this)"><span class="label">TELEWEBION</span><button class="fav" onclick="toggleFav(event,'sport3','TELEWEBION',this)">☆</button></div>
+            <div class="channel" onclick="load('sport1','TELEWEBION1',this)"><span class="label">TELEWEBION1</span><button class="fav" onclick="toggleFav(event,'sport1','TELEWEBION1',this)">☆</button></div>
+            <div class="channel" onclick="load('sport3','TELEWEBION2',this)"><span class="label">TELEWEBION2</span><button class="fav" onclick="toggleFav(event,'sport3','TELEWEBION2',this)">☆</button></div>
+            <div class="channel" onclick="load('parseh','PARSEH',this)"><span class="label">PARSEH</span><button class="fav" onclick="toggleFav(event,'parseh','PARSEH',this)">☆</button></div>
+            <div class="channel" onclick="load('nesfejahan','NESFEJAHAN',this)"><span class="label">NESFEJAHAN</span><button class="fav" onclick="toggleFav(event,'nesfejahan','NESFEJAHAN',this)">☆</button></div>
+            <div class="channel" onclick="load('sarbedaran','SARBEDARAN',this)"><span class="label">SARBEDARAN</span><button class="fav" onclick="toggleFav(event,'sarbedaran','SARBEDARAN',this)">☆</button></div>
+        </div>
+
+        <div class="section" id="regionalSection">
+            <h3>Regionala Kanaler</h3>
+            <div class="channel" onclick="load('mahabad','MAHABAD',this)"><span class="label">MAHABAD</span><button class="fav" onclick="toggleFav(event,'mahabad','MAHABAD',this)">☆</button></div>
+            <div class="channel" onclick="load('kordestan','KORDESTAN',this)"><span class="label">KORDESTAN</span><button class="fav" onclick="toggleFav(event,'kordestan','KORDESTAN',this)">☆</button></div>
+            <div class="channel" onclick="load('zagros','KERMANSHAH',this)"><span class="label">KERMANSHAH</span><button class="fav" onclick="toggleFav(event,'zagros','KERMANSHAH',this)">☆</button></div>
+            <div class="channel" onclick="load('ilam','ILAM',this)"><span class="label">ILAM</span><button class="fav" onclick="toggleFav(event,'ilam','ILAM',this)">☆</button></div>
+            <div class="channel" onclick="load('bushehr','BOOSHEHR',this)"><span class="label">BOOSHEHR</span><button class="fav" onclick="toggleFav(event,'bushehr','BOOSHEHR',this)">☆</button></div>
+            <div class="channel" onclick="load('abadan','ABADAN',this)"><span class="label">ABADAN</span><button class="fav" onclick="toggleFav(event,'abadan','ABADAN',this)">☆</button></div>
+            <div class="channel" onclick="load('khalijefars','BANDARABBAS',this)"><span class="label">BANDARABBAS</span><button class="fav" onclick="toggleFav(event,'khalijefars','BANDARABBAS',this)">☆</button></div>
+            <div class="channel" onclick="load('khoozestan','AHVAZ',this)"><span class="label">AHVAZ</span><button class="fav" onclick="toggleFav(event,'khoozestan','AHVAZ',this)">☆</button></div>
+            <div class="channel" onclick="load('kish','KISH',this)"><span class="label">KISH</span><button class="fav" onclick="toggleFav(event,'kish','KISH',this)">☆</button></div>
+            <div class="channel" onclick="load('hamoon','ZAHEDAN',this)"><span class="label">ZAHEDAN</span><button class="fav" onclick="toggleFav(event,'hamoon','ZAHEDAN',this)">☆</button></div>
+            <div class="channel" onclick="load('alborz','ALBORZ',this)"><span class="label">ALBORZ</span><button class="fav" onclick="toggleFav(event,'alborz','ALBORZ',this)">☆</button></div>
+            <div class="channel" onclick="load('aftab','ARAK',this)"><span class="label">ARAK</span><button class="fav" onclick="toggleFav(event,'aftab','ARAK',this)">☆</button></div>
+            <div class="channel" onclick="load('semnan','SEMNAN',this)"><span class="label">SEMNAN</span><button class="fav" onclick="toggleFav(event,'semnan','SEMNAN',this)">☆</button></div>
+            <div class="channel" onclick="load('noor','QOM',this)"><span class="label">QOM</span><button class="fav" onclick="toggleFav(event,'noor','QOM',this)">☆</button></div>
+            <div class="channel" onclick="load('qazvin','QAZVIN',this)"><span class="label">QAZVIN</span><button class="fav" onclick="toggleFav(event,'qazvin','QAZVIN',this)">☆</button></div>
+            <div class="channel" onclick="load('jahanbin','4Mahalebakhtiari',this)"><span class="label">4Mahalebakhtiari</span><button class="fav" onclick="toggleFav(event,'jahanbin','4Mahalebakhtiari',this)">☆</button></div>
+            <div class="channel" onclick="load('sina','HAMADAN',this)"><span class="label">HAMADAN</span><button class="fav" onclick="toggleFav(event,'sina','HAMADAN',this)">☆</button></div>
+            <div class="channel" onclick="load('aflak','LORESTAN',this)"><span class="label">LORESTAN</span><button class="fav" onclick="toggleFav(event,'aflak','LORESTAN',this)">☆</button></div>
+            <div class="channel" onclick="load('kerman','KERMAN',this)"><span class="label">KERMAN</span><button class="fav" onclick="toggleFav(event,'kerman','KERMAN',this)">☆</button></div>
+            <div class="channel" onclick="load('esfahan','ESFEHAN',this)"><span class="label">ESFEHAN</span><button class="fav" onclick="toggleFav(event,'esfahan','ESFEHAN',this)">☆</button></div>
+            <div class="channel" onclick="load('fars','FARS',this)"><span class="label">FARS</span><button class="fav" onclick="toggleFav(event,'fars','FARS',this)">☆</button></div>
+            <div class="channel" onclick="load('taban','YAZD',this)"><span class="label">YAZD</span><button class="fav" onclick="toggleFav(event,'taban','YAZD',this)">☆</button></div>
+            <div class="channel" onclick="load('dena','YASOOJ',this)"><span class="label">YASOOJ</span><button class="fav" onclick="toggleFav(event,'dena','YASOOJ',this)">☆</button></div>
+            <div class="channel" onclick="load('khavaran','KH.JONOBI',this)"><span class="label">KH.JONOBI</span><button class="fav" onclick="toggleFav(event,'khavaran','KH.JONOBI',this)">☆</button></div>
+            <div class="channel" onclick="load('atrak','KH.SHOMALI',this)"><span class="label">KK.SHOMALI</span><button class="fav" onclick="toggleFav(event,'atrak','KH.SHOMALI',this)">☆</button></div>
+            <div class="channel" onclick="load('khorasanrazavi','KH.RAZAVI',this)"><span class="label">KK.RAZAVI</span><button class="fav" onclick="toggleFav(event,'khorasanrazavi','KH.RAZAVI',this)">☆</button></div>
+            <div class="channel" onclick="load('sabz','GORGAN',this)"><span class="label">GORGAN</span><button class="fav" onclick="toggleFav(event,'sabz','GORGAN',this)">☆</button></div>
+            <div class="channel" onclick="load('tabarestan','MAZANDARAN',this)"><span class="label">MAZANDARAN</span><button class="fav" onclick="toggleFav(event,'tabarestan','MAZANDARAN',this)">☆</button></div>
+            <div class="channel" onclick="load('baran','GILAN',this)"><span class="label">GILAN</span><button class="fav" onclick="toggleFav(event,'baran','GILAN',this)">☆</button></div>
+            <div class="channel" onclick="load('sabalan','ARDABIL',this)"><span class="label">ARDABIL</span><button class="fav" onclick="toggleFav(event,'sabalan','ARDABIL',this)">☆</button></div>
+            <div class="channel" onclick="load('sahand','TABRIZ',this)"><span class="label">TABRIZ</span><button class="fav" onclick="toggleFav(event,'sahand','TABRIZ',this)">☆</button></div>
+            <div class="channel" onclick="load('azarbayjangharbi','URMIA',this)"><span class="label">URMIA</span><button class="fav" onclick="toggleFav(event,'azarbayjangharbi','URMIA',this)">☆</button></div>
+            <div class="channel" onclick="load('eshragh','ZANJAN',this)"><span class="label">ZANJAN</span><button class="fav" onclick="toggleFav(event,'eshragh','ZANJAN',this)">☆</button></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const FAV_KEY = 'xom_favs';
+    let activeBtn = null;
+
+    function getFavs() {
+        try {
+            const v = localStorage.getItem(FAV_KEY);
+            return v ? JSON.parse(v) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+    function saveFavs(arr) {
+        localStorage.setItem(FAV_KEY, JSON.stringify(arr));
+    }
+    function isFav(id) {
+        return getFavs().indexOf(id) !== -1;
+    }
+
+    function toggleFav(event, id, name, btn) {
+        event.stopPropagation();
+        const favs = getFavs();
+        const idx = favs.indexOf(id);
+        if (idx === -1) {
+            favs.push(id);
+        } else {
+            favs.splice(idx,1);
+        }
+        saveFavs(favs);
+        updateStarButtons();
+        refreshFavoritesList();
+    }
+
+    function updateStarButtons() {
+        document.querySelectorAll('.channel').forEach(ch => {
+            const b = ch.querySelector('.fav');
+            if (!b) return;
+            const id = ch.dataset.id || getIdFromOnclick(ch);
+            if (id && isFav(id)) {
+                b.textContent = '★';
+                b.classList.add('fav-active');
+            } else {
+                b.textContent = '☆';
+                b.classList.remove('fav-active');
+            }
+        });
+    }
+
+    function refreshFavoritesList() {
+        const list = document.getElementById('favoritesList');
+        const favs = getFavs();
+        if (!favs || favs.length === 0) {
+            list.textContent = 'Inga favoriter';
+            return;
+        }
+        list.innerHTML = '';
+        favs.forEach(id => {
+            let label = id;
+            const channelEl = Array.from(document.querySelectorAll('.channel')).find(ch => {
+                const chId = ch.dataset.id || getIdFromOnclick(ch);
+                return chId === id;
+            });
+            if (channelEl) {
+                label = channelEl.querySelector('.label')?.textContent.trim() || id;
+            }
+            const btn = document.createElement('button');
+            btn.textContent = label;
+            btn.style.display = 'block';
+            btn.style.width = '100%';
+            btn.style.margin = '6px 0';
+            btn.style.padding = '8px';
+            btn.style.borderRadius = '8px';
+            btn.style.border = 'none';
+            btn.style.background = '#4ecdc4';
+            btn.style.color = '#012';
+            btn.style.fontWeight = 'bold';
+            btn.style.fontSize = '0.9em';
+            btn.onclick = () => {
+                if (channelEl) channelEl.click();
+                else load(id, label, document.createElement('div'));
+            };
+            list.appendChild(btn);
+        });
+    }
+
+    function getIdFromOnclick(ch) {
+        const onclickAttr = ch.getAttribute('onclick') || '';
+        const m = onclickAttr.match(/load\(['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]/);
+        return m ? m[1] : null;
+    }
+    function getNameFromOnclick(ch) {
+        const onclickAttr = ch.getAttribute('onclick') || '';
+        const m = onclickAttr.match(/load\(['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]/);
+        return m ? m[2] : null;
+    }
+
+    function load(id, name, btn) {
+        const player = document.getElementById('player');
+        const nameEl = document.getElementById('channelName');
+
+        player.src = `https://m.telewebion.com/embed/live/${id}`;
+        nameEl.textContent = name;
+
+        if (activeBtn) activeBtn.classList.remove('active');
+        const ch = (btn && btn.classList && btn.classList.contains('channel')) ? btn : (btn && btn.closest ? btn.closest('.channel') : null);
+        if (ch) {
+            ch.classList.add('active');
+            activeBtn = ch;
+            if (window.innerWidth <= 900) {
+                setTimeout(() => {
+                    ch.scrollIntoView({behavior: 'smooth', block: 'center'});
+                }, 300);
+            }
+        } else {
+            const found = Array.from(document.querySelectorAll('.channel')).find(c => (c.dataset.id || getIdFromOnclick(c)) === id);
+            if (found) {
+                found.classList.add('active');
+                activeBtn = found;
+                if (window.innerWidth <= 900) {
+                    setTimeout(() => {
+                        found.scrollIntoView({behavior: 'smooth', block: 'center'});
+                    }, 300);
+                }
+            }
+        }
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const playerArea = document.querySelector('.player-area');
+        const btn = document.querySelector('.menu-toggle');
+
+        // OM gömd → visa
+        if (sidebar.style.display === 'none' || sidebar.style.display === '') {
+            sidebar.style.display = 'block';
+            if (window.innerWidth <= 900) {
+                playerArea.style.height = '65vh';
+            } else {
+                playerArea.style.height = 'auto';
+            }
+            btn.textContent = '✕';
+        } else {
+            // OM synlig → göm
+            sidebar.style.display = 'none';
+            playerArea.style.height = '100vh';
+            btn.textContent = '≡';
+        }
+    }
+
+    window.addEventListener('resize', function() {
+        const sidebar = document.getElementById('sidebar');
+        const playerArea = document.querySelector('.player-area');
+        const btn = document.querySelector('.menu-toggle');
+
+        if (window.innerWidth > 900) {
+            sidebar.style.display = 'block';
+            playerArea.style.height = 'auto';
+            btn.textContent = '≡';
+        } else {
+            // På mobil: behåll nuvarande state, men justera höjd
+            if (sidebar.style.display === 'none' || sidebar.style.display === '') {
+                playerArea.style.height = '100vh';
+            } else {
+                playerArea.style.height = '65vh';
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const channels = document.querySelectorAll('.channel');
+        channels.forEach(ch => {
+            const id = ch.dataset.id || getIdFromOnclick(ch);
+            const name = ch.dataset.name || getNameFromOnclick(ch) || ch.querySelector('.label')?.textContent?.trim();
+            if (id) ch.dataset.id = id;
+            if (name) ch.dataset.name = name;
+        });
+
+        updateStarButtons();
+        refreshFavoritesList();
+
+        const initial = document.querySelector('.channel.active');
+        if (initial) initial.click();
+
+        // På mobil: börja med stor spelare och gömd lista
+        if (window.innerWidth <= 900) {
+            const sidebar = document.getElementById('sidebar');
+            const playerArea = document.querySelector('.player-area');
+            sidebar.style.display = 'none';
+            playerArea.style.height = '100vh';
+            document.querySelector('.menu-toggle').textContent = '≡';
+        }
+    });
+
+    window.toggleFav = toggleFav;
+    window.load = load;
+    window.toggleSidebar = toggleSidebar;
+</script>
+
+</body>
+</html>
