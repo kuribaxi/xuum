@@ -22,20 +22,9 @@
             border-bottom:4px solid #4ecdc4;
             position:relative;
             flex-shrink:0;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
         }
-        .header-top {
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            width:100%;
-            position:relative;
-            margin-bottom:8px;
-        }
-        .header h1{color:#4ecdc4;font-size:1.8em;margin:0;text-align:center;flex:1}
-        .warning{color:#ffcc00;font-size:0.9em;margin-top:8px;text-align:center}
+        .header h1{color:#4ecdc4;font-size:1.8em;margin:0}
+        .warning{color:#ffcc00;font-size:0.9em;margin-top:8px}
         .container{
             flex:1;
             display:flex;
@@ -94,22 +83,17 @@
         .player-header{
             background:#16213e;
             padding:12px;
+            text-align:center;
+            flex-shrink:0;
             display:flex;
             justify-content:space-between;
             align-items:center;
-            flex-shrink:0;
         }
         .player-header h2{
             color:#4ecdc4;
             font-size:1.5em;
             margin:0;
             flex:1;
-            text-align:center;
-        }
-        .player-controls {
-            display:flex;
-            gap:10px;
-            align-items:center;
         }
         .pip-btn {
             background: #4ecdc4;
@@ -120,6 +104,7 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 0.9em;
+            margin-left: 10px;
             white-space: nowrap;
         }
         .pip-btn:hover {
@@ -135,14 +120,16 @@
 
         .menu-toggle{
             display:none;
+            position:absolute;
+            left:12px;
+            top:12px;
             background:#4ecdc4;
             color:#012;
             border:none;
-            padding:8px 12px;
+            padding:6px 10px;
             border-radius:6px;
             font-weight:bold;
             cursor:pointer;
-            font-size:1em;
             z-index:1000;
         }
 
@@ -155,78 +142,28 @@
 
             .player-area{
                 flex:0 0 auto;
-                height:70vh !important;
+                height:65vh;
                 min-height:300px;
-                max-height:calc(100vh - 30vh);
+                max-height:calc(100vh - 40vh);
             }
 
             .sidebar{
                 width:100%;
-                height:30vh !important;
+                height:35vh;
                 min-height:200px;
-                max-height:calc(100vh - 70vh);
+                max-height:calc(100vh - 65vh);
                 overflow-y:auto;
                 padding:10px;
                 position:relative;
-                display:none;
             }
 
-            .header{
-                padding:12px 10px;
-            }
-            
-            .header-top {
-                flex-direction:row;
-                align-items:center;
-                justify-content:space-between;
-                margin-bottom:5px;
-            }
-            
-            .menu-toggle{
-                display:inline-block;
-                order:-1;
-                margin-right:10px;
-                padding:6px 10px;
-                font-size:0.9em;
-            }
-            
-            .header h1{
-                font-size:1.3em;
-                margin:0;
-                text-align:center;
-                flex:1;
-            }
-            
-            .warning{
-                font-size:0.75em;
-                margin-top:5px;
-                line-height:1.2;
-            }
-
-            .player-header{
-                padding:10px;
-                flex-wrap:wrap;
-            }
-            
-            .player-header h2{
-                font-size:1.2em;
-                margin-bottom:5px;
-                order:1;
-                width:100%;
-                text-align:center;
-            }
-            
-            .player-controls{
-                order:2;
-                justify-content:center;
-                width:100%;
-                gap:15px;
-            }
+            .header h1{font-size:1.5em}
+            .header p{font-size:0.9em}
+            .warning{font-size:0.8em}
             
             .pip-btn {
                 padding: 6px 10px;
-                font-size: 0.85em;
-                margin: 0;
+                font-size: 0.8em;
             }
 
             .sidebar .section h3{
@@ -246,37 +183,30 @@
                 border-radius:8px;
                 font-size:0.95em;
             }
+
+            .menu-toggle{
+                display:inline-block;
+            }
         }
 
         @media(max-width:480px){
             .player-area{
-                height:75vh !important;
+                height:60vh;
                 min-height:280px;
             }
 
             .sidebar{
-                height:25vh !important;
-                min-height:180px;
+                height:40vh;
+                min-height:220px;
             }
 
-            .header h1{
-                font-size:1.2em;
-            }
-            
-            .menu-toggle{
-                padding:5px 8px;
-                font-size:0.8em;
-            }
-            
-            .player-header h2{
-                font-size:1.1em;
-            }
-            
+            .header{padding:10px}
+            .header h1{font-size:1.3em}
+            .player-header h2{font-size:1.3em}
             .pip-btn {
                 padding: 5px 8px;
-                font-size: 0.8em;
+                font-size: 0.75em;
             }
-            
             .channel{
                 padding:7px 9px;
                 font-size:0.9em;
@@ -285,39 +215,12 @@
 
         @media(max-width:900px) and (orientation: landscape){
             .player-area{
-                height:80vh !important;
+                height:70vh;
                 min-height:250px;
             }
             .sidebar{
-                height:20vh !important;
-                min-height:150px;
-            }
-            
-            .header h1{
-                font-size:1.1em;
-            }
-            
-            .warning{
-                font-size:0.7em;
-            }
-            
-            .player-header h2{
-                font-size:1em;
-            }
-        }
-        
-        .mobile-header-info {
-            display:none;
-        }
-        
-        @media(max-width:900px){
-            .mobile-header-info {
-                display:block;
-                font-size:0.75em;
-                color:#4ecdc4;
-                margin-top:3px;
-                text-align:center;
-                font-style:italic;
+                height:30vh;
+                min-height:180px;
             }
         }
     </style>
@@ -325,24 +228,17 @@
 <body>
 
 <div class="header">
-    <div class="header-top">
-        <button class="menu-toggle" onclick="toggleSidebar()">📺 Visa kanaler</button>
-        <h1>XOM TV</h1>
-        <div style="width:80px"></div> <!-- Spacer for alignment -->
-    </div>
+    <button class="menu-toggle" onclick="toggleSidebar()">≡</button>
+    <h1>XOM TV</h1>
     <p>Alla iranska TV-kanaler – fungerar perfekt</p>
     <p class="warning">Kör via lokal server → python -m http.server</p>
-    <p class="mobile-header-info">Klicka på "Visa kanaler" för att välja kanal</p>
 </div>
 
 <div class="container">
     <div class="player-area">
         <div class="player-header">
             <h2 id="channelName">TV1</h2>
-            <div class="player-controls">
-                <button class="pip-btn" onclick="togglePictureInPicture(event)">📺 PiP</button>
-                <button class="pip-btn" onclick="toggleFullscreen()">⛶ Fullskärm</button>
-            </div>
+            <button class="pip-btn" onclick="togglePictureInPicture(event)">📺 PiP</button>
         </div>
         <iframe
             id="player"
@@ -526,10 +422,6 @@
             btn.onclick = () => {
                 if (channelEl) channelEl.click();
                 else load(id, label, document.createElement('div'));
-                // Stäng sidebar på mobil efter val
-                if (window.innerWidth <= 900) {
-                    setTimeout(() => toggleSidebar(), 300);
-                }
             };
             list.appendChild(btn);
         });
@@ -565,19 +457,6 @@
         } catch (e) {
             // Fallback: öppna i nytt fönster som också uppdateras
             window.open(player.src, '_blank');
-        }
-    }
-    
-    function toggleFullscreen() {
-        const player = document.getElementById('player');
-        if (player.requestFullscreen) {
-            player.requestFullscreen();
-        } else if (player.webkitRequestFullscreen) {
-            player.webkitRequestFullscreen();
-        } else if (player.mozRequestFullScreen) {
-            player.mozRequestFullScreen();
-        } else if (player.msRequestFullscreen) {
-            player.msRequestFullscreen();
         }
     }
 
@@ -630,42 +509,27 @@
                 }
             }
         }
-        
-        // Uppdatera meny-knappens text på mobil
-        if (window.innerWidth <= 900) {
-            const menuBtn = document.querySelector('.menu-toggle');
-            menuBtn.textContent = '✕ Stäng lista';
-        }
     }
 
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const playerArea = document.querySelector('.player-area');
         const btn = document.querySelector('.menu-toggle');
-        const isMobile = window.innerWidth <= 900;
 
         // OM gömd → visa
         if (sidebar.style.display === 'none' || sidebar.style.display === '') {
             sidebar.style.display = 'block';
-            if (isMobile) {
-                playerArea.style.height = '30vh';
-                btn.textContent = '✕ Stäng lista';
-                // Scrolla till aktiv kanal
-                if (activeBtn) {
-                    setTimeout(() => {
-                        activeBtn.scrollIntoView({behavior: 'smooth', block: 'center'});
-                    }, 100);
-                }
+            if (window.innerWidth <= 900) {
+                playerArea.style.height = '65vh';
             } else {
                 playerArea.style.height = 'auto';
             }
+            btn.textContent = '✕';
         } else {
             // OM synlig → göm
             sidebar.style.display = 'none';
-            if (isMobile) {
-                playerArea.style.height = '100vh';
-                btn.textContent = '📺 Visa kanaler';
-            }
+            playerArea.style.height = '100vh';
+            btn.textContent = '≡';
         }
     }
 
@@ -673,23 +537,17 @@
         const sidebar = document.getElementById('sidebar');
         const playerArea = document.querySelector('.player-area');
         const btn = document.querySelector('.menu-toggle');
-        const isMobile = window.innerWidth <= 900;
 
-        if (!isMobile) {
-            // Desktop: alltid visa sidebar
+        if (window.innerWidth > 900) {
             sidebar.style.display = 'block';
             playerArea.style.height = 'auto';
             btn.textContent = '≡';
-            btn.style.display = 'none';
         } else {
-            // Mobil: visa eller dölj baserat på state
-            btn.style.display = 'inline-block';
+            // På mobil: behåll nuvarande state, men justera höjd
             if (sidebar.style.display === 'none' || sidebar.style.display === '') {
                 playerArea.style.height = '100vh';
-                btn.textContent = '📺 Visa kanaler';
             } else {
-                playerArea.style.height = '30vh';
-                btn.textContent = '✕ Stäng lista';
+                playerArea.style.height = '65vh';
             }
         }
     });
@@ -713,31 +571,9 @@
         if (window.innerWidth <= 900) {
             const sidebar = document.getElementById('sidebar');
             const playerArea = document.querySelector('.player-area');
-            const btn = document.querySelector('.menu-toggle');
             sidebar.style.display = 'none';
             playerArea.style.height = '100vh';
-            btn.textContent = '📺 Visa kanaler';
-            btn.style.display = 'inline-block';
-        } else {
-            // Desktop: dölj meny-knapp
-            document.querySelector('.menu-toggle').style.display = 'none';
-        }
-    });
-
-    // Stäng sidebar när man klickar utanför (på mobil)
-    document.addEventListener('click', function(event) {
-        const sidebar = document.getElementById('sidebar');
-        const menuBtn = document.querySelector('.menu-toggle');
-        const isMobile = window.innerWidth <= 900;
-        
-        if (isMobile && sidebar.style.display === 'block') {
-            // Kolla om klicket är utanför sidebar och inte på kanal eller meny-knapp
-            if (!sidebar.contains(event.target) && 
-                !menuBtn.contains(event.target) && 
-                !event.target.classList.contains('channel') &&
-                !event.target.closest('.channel')) {
-                toggleSidebar();
-            }
+            document.querySelector('.menu-toggle').textContent = '≡';
         }
     });
 
@@ -745,7 +581,6 @@
     window.load = load;
     window.toggleSidebar = toggleSidebar;
     window.togglePictureInPicture = togglePictureInPicture;
-    window.toggleFullscreen = toggleFullscreen;
 </script>
 
 </body>
