@@ -90,6 +90,7 @@
             flex-direction:column;
             min-height:0;
             overflow:hidden;
+            position:relative;
         }
         .player-header{
             background:#16213e;
@@ -98,6 +99,7 @@
             justify-content:space-between;
             align-items:center;
             flex-shrink:0;
+            z-index:10;
         }
         .player-header h2{
             color:#4ecdc4;
@@ -111,7 +113,7 @@
             gap:10px;
             align-items:center;
         }
-        .pip-btn {
+        .pip-btn, .fullscreen-btn {
             background: #4ecdc4;
             color: #012;
             border: none;
@@ -122,7 +124,7 @@
             font-size: 0.9em;
             white-space: nowrap;
         }
-        .pip-btn:hover {
+        .pip-btn:hover, .fullscreen-btn:hover {
             background: #45b7aa;
         }
         #player{
@@ -131,6 +133,46 @@
             border:none;
             min-height:0;
             background:#000;
+            z-index:1;
+        }
+        .player-container {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+        }
+        .fullscreen-header {
+            background: rgba(22, 33, 62, 0.9);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            z-index: 10000;
+        }
+        .fullscreen-header h2 {
+            color: #4ecdc4;
+            margin: 0;
+        }
+        .fullscreen-close {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         .menu-toggle{
@@ -223,7 +265,7 @@
                 gap:15px;
             }
             
-            .pip-btn {
+            .pip-btn, .fullscreen-btn {
                 padding: 6px 10px;
                 font-size: 0.85em;
                 margin: 0;
@@ -272,7 +314,7 @@
                 font-size:1.1em;
             }
             
-            .pip-btn {
+            .pip-btn, .fullscreen-btn {
                 padding: 5px 8px;
                 font-size: 0.8em;
             }
@@ -340,22 +382,25 @@
         <div class="player-header">
             <h2 id="channelName">TV1</h2>
             <div class="player-controls">
-                <button class="pip-btn" onclick="togglePictureInPicture(event)">📺 PiP</button>
-                <button class="pip-btn" onclick="toggleFullscreen()">⛶ Fullskärm</button>
+                <button class="pip-btn" onclick="togglePictureInPicture()">📺 PiP</button>
+                <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullskärm</button>
             </div>
         </div>
-        <iframe
-            id="player"
-            src="https://m.telewebion.com/embed/live/tv1?autoplay=1&mute=0"
-            style="width:100%;height:100%;border:none;"
-            allowfullscreen
-            allow="autoplay *; encrypted-media *; picture-in-picture *; fullscreen *"
-            loading="eager"
-            sandbox="allow-scripts allow-same-origin allow-presentation">
-        </iframe>
+        <div class="player-container">
+            <iframe
+                id="player"
+                src="https://m.telewebion.com/embed/live/tv1?autoplay=1&mute=0"
+                style="width:100%;height:100%;border:none;"
+                allowfullscreen
+                allow="autoplay *; encrypted-media *; picture-in-picture *; fullscreen *"
+                loading="eager"
+                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups">
+            </iframe>
+        </div>
     </div>
 
     <div class="sidebar" id="sidebar">
+        <!-- Kanaler här (samma som tidigare) -->
         <div class="section" id="favSection">
             <h3>Favoriter</h3>
             <div id="favoritesList" style="color:#fff">Inga favoriter</div>
@@ -445,10 +490,30 @@
     </div>
 </div>
 
+<!-- Fullskärm overlay -->
+<div class="fullscreen-overlay" id="fullscreenOverlay">
+    <div class="fullscreen-header">
+        <h2 id="fullscreenChannelName">TV1</h2>
+        <button class="fullscreen-close" onclick="exitFullscreen()">✕ Stäng fullskärm</button>
+    </div>
+    <iframe
+        id="fullscreenPlayer"
+        src="https://m.telewebion.com/embed/live/tv1?autoplay=1&mute=0"
+        style="width:100%;height:calc(100% - 60px);border:none;"
+        allowfullscreen
+        allow="autoplay *; encrypted-media *; picture-in-picture *; fullscreen *"
+        loading="eager"
+        sandbox="allow-scripts allow-same-origin allow-presentation allow-popups">
+    </iframe>
+</div>
+
 <script>
     const FAV_KEY = 'xom_favs';
     let activeBtn = null;
     let pipActive = false;
+    let isFullscreen = false;
+    let currentChannelId = 'tv1';
+    let currentChannelName = 'TV1';
 
     function getFavs() {
         try {
@@ -546,64 +611,126 @@
         return m ? m[2] : null;
     }
 
-    async function togglePictureInPicture(event) {
+    async function togglePictureInPicture() {
         const player = document.getElementById('player');
-        const btn = event ? event.target : document.querySelector('.pip-btn');
+        const pipBtn = document.querySelector('.pip-btn');
         
         try {
             if (document.pictureInPictureElement) {
                 // Avsluta PiP
                 await document.exitPictureInPicture();
                 pipActive = false;
-                btn.textContent = '📺 PiP';
-            } else {
+                pipBtn.textContent = '📺 PiP';
+            } else if (document.pictureInPictureEnabled) {
                 // Starta PiP
                 await player.requestPictureInPicture();
                 pipActive = true;
-                btn.textContent = '🖥️ Normal';
+                pipBtn.textContent = '🖥️ Normal';
+                
+                // Lyssna på när PiP stängs
+                player.addEventListener('leavepictureinpicture', () => {
+                    pipActive = false;
+                    pipBtn.textContent = '📺 PiP';
+                });
+            } else {
+                // PiP stöds inte - visa meddelande
+                alert('Picture-in-Picture stöds inte av din webbläsare. Testa med Chrome, Edge eller Safari.');
+                pipBtn.textContent = '📺 PiP (ej stödd)';
+                setTimeout(() => {
+                    pipBtn.textContent = '📺 PiP';
+                }, 2000);
             }
         } catch (e) {
-            // Fallback: öppna i nytt fönster som också uppdateras
-            window.open(player.src, '_blank');
-        }
-    }
-    
-    function toggleFullscreen() {
-        const player = document.getElementById('player');
-        if (player.requestFullscreen) {
-            player.requestFullscreen();
-        } else if (player.webkitRequestFullscreen) {
-            player.webkitRequestFullscreen();
-        } else if (player.mozRequestFullScreen) {
-            player.mozRequestFullScreen();
-        } else if (player.msRequestFullscreen) {
-            player.msRequestFullscreen();
+            console.error('PiP error:', e);
+            pipBtn.textContent = '📺 PiP (fel)';
+            setTimeout(() => {
+                pipBtn.textContent = '📺 PiP';
+            }, 2000);
+            
+            // Fallback: öppna i nytt fönster
+            window.open(`https://m.telewebion.com/embed/live/${currentChannelId}`, '_blank', 'width=400,height=300');
         }
     }
 
+    function toggleFullscreen() {
+        const overlay = document.getElementById('fullscreenOverlay');
+        const mainPlayer = document.getElementById('player');
+        const fullscreenPlayer = document.getElementById('fullscreenPlayer');
+        const fsChannelName = document.getElementById('fullscreenChannelName');
+        
+        if (isFullscreen) {
+            exitFullscreen();
+        } else {
+            // Visa overlay
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Uppdatera fullskärmsspelaren
+            fsChannelName.textContent = currentChannelName;
+            fullscreenPlayer.src = mainPlayer.src;
+            
+            isFullscreen = true;
+            
+            // Försök med vanlig fullskärm också för iframe
+            if (fullscreenPlayer.requestFullscreen) {
+                fullscreenPlayer.requestFullscreen();
+            } else if (fullscreenPlayer.webkitRequestFullscreen) {
+                fullscreenPlayer.webkitRequestFullscreen();
+            } else if (fullscreenPlayer.mozRequestFullScreen) {
+                fullscreenPlayer.mozRequestFullScreen();
+            } else if (fullscreenPlayer.msRequestFullscreen) {
+                fullscreenPlayer.msRequestFullscreen();
+            }
+            
+            // Förhindra att back-knappen på mobil stänger appen
+            window.history.pushState(null, null, window.location.href);
+            window.addEventListener('popstate', exitFullscreen);
+        }
+    }
+    
+    function exitFullscreen() {
+        const overlay = document.getElementById('fullscreenOverlay');
+        
+        overlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        
+        // Lämna fullskärm om det behövs
+        if (document.fullscreenElement || document.webkitFullscreenElement || 
+            document.mozFullScreenElement || document.msFullscreenElement) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+        
+        isFullscreen = false;
+        window.removeEventListener('popstate', exitFullscreen);
+    }
+
     function load(id, name, btn) {
+        currentChannelId = id;
+        currentChannelName = name;
+        
         const player = document.getElementById('player');
+        const fullscreenPlayer = document.getElementById('fullscreenPlayer');
         const nameEl = document.getElementById('channelName');
+        const fsNameEl = document.getElementById('fullscreenChannelName');
 
         // Stark autoplay + tvinga reload för direkt uppspelning
         const newSrc = `https://m.telewebion.com/embed/live/${id}?autoplay=1&mute=0&start=0&_=${Date.now()}`;
         
-        // OM PiP är aktiv → uppdatera direkt i PiP-fönstret
-        if (pipActive && document.pictureInPictureElement) {
-            player.src = newSrc;
-            // Försök att tvinga reload i PiP-fönstret
-            try {
-                if (player.contentWindow && player.contentWindow.location) {
-                    player.contentWindow.location.replace(newSrc);
-                }
-            } catch (e) {
-                // Cross-origin error, fortsätt normalt
-                player.src = newSrc;
-                player.src = newSrc; // Dubbel set för att tvinga reload
-            }
-        } else {
-            player.src = newSrc;
-            player.src = newSrc; // Dubbel set för att tvinga reload
+        player.src = newSrc;
+        player.src = newSrc; // Dubbel set för att tvinga reload
+        
+        // Uppdatera fullskärmsspelaren om den är aktiv
+        if (isFullscreen) {
+            fullscreenPlayer.src = newSrc;
+            fsNameEl.textContent = name;
         }
         
         nameEl.textContent = name;
@@ -694,6 +821,19 @@
         }
     });
 
+    // Hantera fullskärm events
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
+    function handleFullscreenChange() {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement && 
+            !document.mozFullScreenElement && !document.msFullscreenElement) {
+            exitFullscreen();
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const channels = document.querySelectorAll('.channel');
         channels.forEach(ch => {
@@ -722,6 +862,11 @@
             // Desktop: dölj meny-knapp
             document.querySelector('.menu-toggle').style.display = 'none';
         }
+        
+        // Kolla om PiP är tillgängligt
+        if (!('pictureInPictureEnabled' in document)) {
+            document.pictureInPictureEnabled = true; // Fallback
+        }
     });
 
     // Stäng sidebar när man klickar utanför (på mobil)
@@ -741,11 +886,30 @@
         }
     });
 
+    // Hantera tangentbordsgenvägar
+    document.addEventListener('keydown', function(e) {
+        // F för fullskärm
+        if (e.key === 'f' || e.key === 'F') {
+            e.preventDefault();
+            toggleFullscreen();
+        }
+        // P för PiP
+        if (e.key === 'p' || e.key === 'P') {
+            e.preventDefault();
+            togglePictureInPicture();
+        }
+        // ESC för att lämna fullskärm
+        if (e.key === 'Escape' && isFullscreen) {
+            exitFullscreen();
+        }
+    });
+
     window.toggleFav = toggleFav;
     window.load = load;
     window.toggleSidebar = toggleSidebar;
     window.togglePictureInPicture = togglePictureInPicture;
     window.toggleFullscreen = toggleFullscreen;
+    window.exitFullscreen = exitFullscreen;
 </script>
 
 </body>
