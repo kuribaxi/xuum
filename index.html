@@ -1,752 +1,824 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>XOM TV – Alla Iranska Kanaler (dec 2025)</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{
-            font-family:Arial,sans-serif;
-            background:#1a1a2e;
-            color:white;
-            display:flex;
-            flex-direction:column;
-            height:100vh;
-            overflow:hidden;
-        }
-        .header{
-            background:#16213e;
-            padding:15px;
-            text-align:center;
-            border-bottom:4px solid #4ecdc4;
-            position:relative;
-            flex-shrink:0;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-        }
-        .header-top {
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            width:100%;
-            position:relative;
-            margin-bottom:8px;
-        }
-        .header h1{color:#4ecdc4;font-size:1.8em;margin:0;text-align:center;flex:1}
-        .warning{color:#ffcc00;font-size:0.9em;margin-top:8px;text-align:center}
-        .container{
-            flex:1;
-            display:flex;
-            overflow:hidden;
-        }
-        .sidebar{
-            width:340px;
-            background:#0f3460;
-            overflow-y:auto;
-            padding:15px;
-            flex-shrink:0;
-        }
-        .section h3{
-            color:#4ecdc4;
-            margin:25px 0 12px 0;
-            font-size:1.2em;
-            border-bottom:2px solid #4ecdc4;
-            padding-bottom:6px;
-        }
-        .channel{
-            background:#4ecdc4;
-            color:#000;
-            padding:10px 12px;
-            margin:6px 0;
-            border-radius:10px;
-            cursor:pointer;
-            font-weight:bold;
-            transition:.18s;
-            text-align:left;
-            font-size:1em;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        }
-        .channel:hover{background:#45b7aa;transform:scale(1.02)}
-        .channel.active{background:#e74c3c;color:white}
-        .channel .label{flex:1;padding-right:8px}
-        .fav{
-            background:transparent;
-            border:none;
-            font-size:1.1em;
-            cursor:pointer;
-            color:#012;
-            padding:4px;
-            line-height:1;
-        }
-        .fav.fav-active{color:#f5d259}
-        .player-area{
-            flex:1;
-            background:#000;
-            display:flex;
-            flex-direction:column;
-            min-height:0;
-            overflow:hidden;
-        }
-        .player-header{
-            background:#16213e;
-            padding:12px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            flex-shrink:0;
-        }
-        .player-header h2{
-            color:#4ecdc4;
-            font-size:1.5em;
-            margin:0;
-            flex:1;
-            text-align:center;
-        }
-        .player-controls {
-            display:flex;
-            gap:10px;
-            align-items:center;
-        }
-        .pip-btn {
-            background: #4ecdc4;
-            color: #012;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.9em;
-            white-space: nowrap;
-        }
-        .pip-btn:hover {
-            background: #45b7aa;
-        }
-        #player{
-            flex:1;
-            width:100%;
-            border:none;
-            min-height:0;
-            background:#000;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bilingual Biology Flashcards</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+    .subtitle {
+      text-align: center;
+      color: #aaa;
+      margin-bottom: 20px;
+      font-size: 0.95em;
+    }
+    .lang-toggle {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .lang-toggle button {
+      padding: 8px 24px;
+      margin: 0 8px;
+      border: 2px solid #ffd700;
+      background: transparent;
+      color: #ffd700;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 1em;
+    }
+    .lang-toggle button.active {
+      background: #ffd700;
+      color: #1a1a2e;
+    }
+    .lang-toggle button:hover {
+      transform: scale(1.05);
+    }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #333;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00d4aa, #00b4d8);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9em;
+      transition: all 0.2s;
+    }
+    .btn:hover { transform: scale(1.05); }
+    .btn-prev { background: #e63946; color: white; }
+    .btn-flip { background: #f4a261; color: #1a1a2e; }
+    .btn-next { background: #2a9d8f; color: white; }
+    .btn-shuffle { background: #9b5de5; color: white; }
+    .btn-filter {
+      padding: 6px 14px;
+      border-radius: 15px;
+      font-size: 0.8em;
+      border: 2px solid;
+      background: transparent;
+      cursor: pointer;
+    }
+    .filter-active { background: rgba(255,255,255,0.2); }
 
-        .menu-toggle{
-            display:none;
-            background:#4ecdc4;
-            color:#012;
-            border:none;
-            padding:8px 12px;
-            border-radius:6px;
-            font-weight:bold;
-            cursor:pointer;
-            font-size:1em;
-            z-index:1000;
-        }
+    .flashcard-container {
+      perspective: 1000px;
+      max-width: 700px;
+      margin: 0 auto 20px;
+      height: 600px;
+    }
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+    .flashcard.flipped { transform: rotateY(180deg); }
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+    .card-front {
+      background: linear-gradient(145deg, #2d3436, #000000);
+      border: 3px solid;
+    }
+    .card-back {
+      background: linear-gradient(145deg, #1e3a5f, #0d2137);
+      transform: rotateY(180deg);
+      border: 3px solid;
+    }
 
-        @media(max-width:900px){
-            .container{
-                flex-direction:column;
-                height:auto;
-                min-height:0;
-            }
+    .topic-science .card-front, .topic-science .card-back { border-color: #f4a261; }
+    .topic-cell .card-front, .topic-cell .card-back { border-color: #2a9d8f; }
+    .topic-genetics .card-front, .topic-genetics .card-back { border-color: #e63946; }
+    .topic-evolution .card-front, .topic-evolution .card-back { border-color: #9b5de5; }
+    .topic-ecology .card-front, .topic-ecology .card-back { border-color: #00d4aa; }
+    .topic-human .card-front, .topic-human .card-back { border-color: #ff6b6b; }
 
-            .player-area{
-                flex:0 0 auto;
-                height:70vh !important;
-                min-height:300px;
-                max-height:calc(100vh - 30vh);
-            }
+    .topic-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75em;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      align-self: flex-start;
+    }
+    .badge-science { background: #f4a261; color: #1a1a2e; }
+    .badge-cell { background: #2a9d8f; color: white; }
+    .badge-genetics { background: #e63946; color: white; }
+    .badge-evolution { background: #9b5de5; color: white; }
+    .badge-ecology { background: #00d4aa; color: #1a1a2e; }
+    .badge-human { background: #ff6b6b; color: white; }
 
-            .sidebar{
-                width:100%;
-                height:30vh !important;
-                min-height:200px;
-                max-height:calc(100vh - 70vh);
-                overflow-y:auto;
-                padding:10px;
-                position:relative;
-                display:none;
-            }
+    .card-question {
+      font-size: 1.3em;
+      font-weight: bold;
+      line-height: 1.4;
+      margin-bottom: 15px;
+    }
+    .card-answer {
+      font-size: 1em;
+      line-height: 1.6;
+      color: #e0e0e0;
+    }
+    .card-answer strong { color: #ffd700; }
+    .card-answer ul { margin-left: 20px; margin-top: 8px; }
+    .card-answer li { margin-bottom: 6px; }
 
-            .header{
-                padding:12px 10px;
-            }
-            
-            .header-top {
-                flex-direction:row;
-                align-items:center;
-                justify-content:space-between;
-                margin-bottom:5px;
-            }
-            
-            .menu-toggle{
-                display:inline-block;
-                order:-1;
-                margin-right:10px;
-                padding:6px 10px;
-                font-size:0.9em;
-            }
-            
-            .header h1{
-                font-size:1.3em;
-                margin:0;
-                text-align:center;
-                flex:1;
-            }
-            
-            .warning{
-                font-size:0.75em;
-                margin-top:5px;
-                line-height:1.2;
-            }
+    .card-image {
+      width: 100%;
+      max-height: 250px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin: 15px 0;
+      background: rgba(255,255,255,0.05);
+    }
+    .card-image-front {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin: 10px 0;
+      background: rgba(255,255,255,0.05);
+    }
 
-            .player-header{
-                padding:10px;
-                flex-wrap:wrap;
-            }
-            
-            .player-header h2{
-                font-size:1.2em;
-                margin-bottom:5px;
-                order:1;
-                width:100%;
-                text-align:center;
-            }
-            
-            .player-controls{
-                order:2;
-                justify-content:center;
-                width:100%;
-                gap:15px;
-            }
-            
-            .pip-btn {
-                padding: 6px 10px;
-                font-size: 0.85em;
-                margin: 0;
-            }
+    .hint-box {
+      background: rgba(255,255,255,0.1);
+      border-left: 4px solid #ffd700;
+      padding: 10px 15px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #ffd700;
+    }
 
-            .sidebar .section h3{
-                display:block;
-                margin:12px 0 6px 0;
-                font-size:1.1em;
-                padding-bottom:4px;
-                position:sticky;
-                top:0;
-                background:#0f3460;
-                z-index:10;
-            }
+    .card-counter {
+      text-align: center;
+      color: #888;
+      font-size: 0.9em;
+      margin-top: 10px;
+    }
 
-            .channel{
-                margin:4px 0;
-                padding:8px 10px;
-                border-radius:8px;
-                font-size:0.95em;
-            }
-        }
+    .quick-ref {
+      max-width: 700px;
+      margin: 30px auto;
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      padding: 20px;
+    }
+    .quick-ref h2 {
+      color: #ffd700;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+    }
+    .quick-item {
+      background: rgba(0,0,0,0.3);
+      padding: 12px;
+      border-radius: 10px;
+      border-left: 4px solid;
+    }
+    .quick-item h4 { color: #ffd700; margin-bottom: 5px; font-size: 0.95em; }
+    .quick-item p { font-size: 0.85em; color: #ccc; line-height: 1.5; }
 
-        @media(max-width:480px){
-            .player-area{
-                height:75vh !important;
-                min-height:280px;
-            }
+    .star-rating {
+      display: flex;
+      gap: 5px;
+      margin-top: 15px;
+      justify-content: center;
+    }
+    .star {
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #444;
+      transition: color 0.2s;
+    }
+    .star.active { color: #ffd700; }
+    .star:hover { color: #ffd700; }
 
-            .sidebar{
-                height:25vh !important;
-                min-height:180px;
-            }
-
-            .header h1{
-                font-size:1.2em;
-            }
-            
-            .menu-toggle{
-                padding:5px 8px;
-                font-size:0.8em;
-            }
-            
-            .player-header h2{
-                font-size:1.1em;
-            }
-            
-            .pip-btn {
-                padding: 5px 8px;
-                font-size: 0.8em;
-            }
-            
-            .channel{
-                padding:7px 9px;
-                font-size:0.9em;
-            }
-        }
-
-        @media(max-width:900px) and (orientation: landscape){
-            .player-area{
-                height:80vh !important;
-                min-height:250px;
-            }
-            .sidebar{
-                height:20vh !important;
-                min-height:150px;
-            }
-            
-            .header h1{
-                font-size:1.1em;
-            }
-            
-            .warning{
-                font-size:0.7em;
-            }
-            
-            .player-header h2{
-                font-size:1em;
-            }
-        }
-        
-        .mobile-header-info {
-            display:none;
-        }
-        
-        @media(max-width:900px){
-            .mobile-header-info {
-                display:block;
-                font-size:0.75em;
-                color:#4ecdc4;
-                margin-top:3px;
-                text-align:center;
-                font-style:italic;
-            }
-        }
-    </style>
+    @media (max-width: 600px) {
+      .flashcard-container { height: 650px; }
+      .card-question { font-size: 1.1em; }
+      .card-answer { font-size: 0.9em; }
+      h1 { font-size: 1.5em; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="header-top">
-        <button class="menu-toggle" onclick="toggleSidebar()">📺 Visa kanaler</button>
-        <h1>XOM TV</h1>
-        <div style="width:80px"></div> <!-- Spacer for alignment -->
-    </div>
-    <p>Alla iranska TV-kanaler – fungerar perfekt</p>
-    <p class="warning">Kör via lokal server → python -m http.server</p>
-    <p class="mobile-header-info">Klicka på "Visa kanaler" för att välja kanal</p>
+<h1 id="mainTitle">🌱 Biology Level 1 · Flashcards</h1>
+<p class="subtitle" id="subtitle">Click card to flip · Bilingual (EN/SV)</p>
+
+<div class="lang-toggle">
+  <button id="btnEn" class="active" onclick="setLanguage('en')">🇬🇧 English</button>
+  <button id="btnSv" onclick="setLanguage('sv')">🇸🇪 Svenska</button>
 </div>
 
-<div class="container">
-    <div class="player-area">
-        <div class="player-header">
-            <h2 id="channelName">TV1</h2>
-            <div class="player-controls">
-                <button class="pip-btn" onclick="togglePictureInPicture(event)">📺 PiP</button>
-                <button class="pip-btn" onclick="toggleFullscreen()">⛶ Fullskärm</button>
-            </div>
-        </div>
-        <iframe
-            id="player"
-            src="https://m.telewebion.com/embed/live/tv1?autoplay=1&mute=0"
-            style="width:100%;height:100%;border:none;"
-            allowfullscreen
-            allow="autoplay *; encrypted-media *; picture-in-picture *; fullscreen *"
-            loading="eager"
-            sandbox="allow-scripts allow-same-origin allow-presentation">
-        </iframe>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="controls" id="filterControls">
+  <button class="btn btn-filter filter-active" onclick="filterCards('all', this)" style="border-color:#fff;color:#fff;" data-key="filterAll">All</button>
+  <button class="btn btn-filter" onclick="filterCards('science', this)" style="border-color:#f4a261;color:#f4a261;" data-key="filterScience">Science</button>
+  <button class="btn btn-filter" onclick="filterCards('cell', this)" style="border-color:#2a9d8f;color:#2a9d8f;" data-key="filterCell">Cell</button>
+  <button class="btn btn-filter" onclick="filterCards('genetics', this)" style="border-color:#e63946;color:#e63946;" data-key="filterGenetics">Genetics</button>
+  <button class="btn btn-filter" onclick="filterCards('evolution', this)" style="border-color:#9b5de5;color:#9b5de5;" data-key="filterEvolution">Evolution</button>
+  <button class="btn btn-filter" onclick="filterCards('ecology', this)" style="border-color:#00d4aa;color:#00d4aa;" data-key="filterEcology">Ecology</button>
+  <button class="btn btn-filter" onclick="filterCards('human', this)" style="border-color:#ff6b6b;color:#ff6b6b;" data-key="filterHuman">Human</button>
+</div>
+
+<div class="controls">
+  <button class="btn btn-prev" onclick="prevCard()" data-key="prev">Previous</button>
+  <button class="btn btn-flip" onclick="flipCard()" data-key="flip">Flip</button>
+  <button class="btn btn-next" onclick="nextCard()" data-key="next">Next</button>
+  <button class="btn btn-shuffle" onclick="shuffleCards()" data-key="shuffle">Shuffle</button>
+</div>
+
+<div class="flashcard-container" onclick="flipCard()">
+  <div class="flashcard" id="flashcard">
+    <div class="card-face card-front" id="cardFront">
+      <span class="topic-badge" id="frontBadge">SCIENCE</span>
+      <div class="card-question" id="frontQuestion">Loading...</div>
+      <img class="card-image-front" id="frontImage" src="" alt="" style="display:none;">
+      <div class="hint-box" id="hintBox">Click to see the answer</div>
     </div>
-
-    <div class="sidebar" id="sidebar">
-        <div class="section" id="favSection">
-            <h3>Favoriter</h3>
-            <div id="favoritesList" style="color:#fff">Inga favoriter</div>
-        </div>
-
-        <div class="section" id="nationalSection">
-            <h3>Nationella Kanaler</h3>
-            <div class="channel active" onclick="load('tv1','TV1',this)">
-                <span class="label">TV1</span>
-                <button class="fav" onclick="toggleFav(event,'tv1','TV1',this)">☆</button>
-            </div>
-            <div class="channel" onclick="load('tv2','TV2',this)"><span class="label">TV2</span><button class="fav" onclick="toggleFav(event,'tv2','TV2',this)">☆</button></div>
-            <div class="channel" onclick="load('tv3','TV3',this)"><span class="label">TV3</span><button class="fav" onclick="toggleFav(event,'tv3','TV3',this)">☆</button></div>
-            <div class="channel" onclick="load('tv4','TV4',this)"><span class="label">TV4</span><button class="fav" onclick="toggleFav(event,'tv4','TV4',this)">☆</button></div>
-            <div class="channel" onclick="load('Tehran','Tehran',this)"><span class="label">Tehran</span><button class="fav" onclick="toggleFav(event,'Tehran','Tehran',this)">☆</button></div>
-            <div class="channel" onclick="load('nasim','NASIM',this)"><span class="label">NASIM</span><button class="fav" onclick="toggleFav(event,'nasim','NASIM',this)">☆</button></div>
-            <div class="channel" onclick="load('varzesh','VARZESH',this)"><span class="label">VARZESH (Sport)</span><button class="fav" onclick="toggleFav(event,'varzesh','VARZESH',this)">☆</button></div>
-            <div class="channel" onclick="load('irinn','IRINN / KHABAR',this)"><span class="label">IRINN / KHABAR</span><button class="fav" onclick="toggleFav(event,'irinn','IRINN / KHABAR',this)">☆</button></div>
-            <div class="channel" onclick="load('irinn2','KHABAR2',this)"><span class="label">KHABAR2</span><button class="fav" onclick="toggleFav(event,'irinn2','KHABAR2',this)">☆</button></div>
-            <div class="channel" onclick="load('ifilm','IFILM Farsi',this)"><span class="label">IFILM Farsi</span><button class="fav" onclick="toggleFav(event,'ifilm','IFILM Farsi',this)">☆</button></div>
-            <div class="channel" onclick="load('tv1plus','TV1PLUS',this)"><span class="label">TV1PLUS</span><button class="fav" onclick="toggleFav(event,'tv1plus','TV1PLUS',this)">☆</button></div>
-            <div class="channel" onclick="load('omid','OMID',this)"><span class="label">OMID</span><button class="fav" onclick="toggleFav(event,'omid','OMID',this)">☆</button></div>
-            <div class="channel" onclick="load('ifilmenglish','IFILM English',this)"><span class="label">IFILM English</span><button class="fav" onclick="toggleFav(event,'ifilmenglish','IFILM English',this)">☆</button></div>
-            <div class="channel" onclick="load('namayesh','NAMAYESH',this)"><span class="label">NAMAYESH</span><button class="fav" onclick="toggleFav(event,'namayesh','NAMAYESH',this)">☆</button></div>
-            <div class="channel" onclick="load('mostanad','MOSTANAD',this)"><span class="label">MOSTANAD</span><button class="fav" onclick="toggleFav(event,'mostanad','MOSTANAD',this)">☆</button></div>
-            <div class="channel" onclick="load('hdtest','TAMASHA',this)"><span class="label">TAMASHA</span><button class="fav" onclick="toggleFav(event,'hdtest','TAMASHA',this)">☆</button></div>
-            <div class="channel" onclick="load('amouzesh','AMOOZESH',this)"><span class="label">AMOOZESH</span><button class="fav" onclick="toggleFav(event,'amouzesh','AMOOZESH',this)">☆</button></div>
-            <div class="channel" onclick="load('salamat','SALAMAT',this)"><span class="label">SALAMAT</span><button class="fav" onclick="toggleFav(event,'salamat','SALAMAT',this)">☆</button></div>
-            <div class="channel" onclick="load('ofogh','OFOGH',this)"><span class="label">OFOGH</span><button class="fav" onclick="toggleFav(event,'ofogh','OFOGH',this)">☆</button></div>
-            <div class="channel" onclick="load('quran','QURAN TV',this)"><span class="label">QURAN TV</span><button class="fav" onclick="toggleFav(event,'quran','QURAN TV',this)">☆</button></div>
-            <div class="channel" onclick="load('pooya','POOYA & JAVANAN',this)"><span class="label">POOYA & JAVANAN</span><button class="fav" onclick="toggleFav(event,'pooya','POOYA & JAVANAN',this)">☆</button></div>
-            <div class="channel" onclick="load('javaneh','JAVANEH / KOODAK+',this)"><span class="label">JAVANEH / KOODAK+</span><button class="fav" onclick="toggleFav(event,'javaneh','JAVANEH / KOODAK+',this)">☆</button></div>
-            <div class="channel" onclick="load('sepehr','SEPEHR',this)"><span class="label">SEPEHR</span><button class="fav" onclick="toggleFav(event,'sepehr','SEPEHR',this)">☆</button></div>
-            <div class="channel" onclick="load('faratar','FARATAR',this)"><span class="label">FARATAR</span><button class="fav" onclick="toggleFav(event,'faratar','FARATAR',this)">☆</button></div>
-            <div class="channel" onclick="load('nava','NAVA',this)"><span class="label">NAVA</span><button class="fav" onclick="toggleFav(event,'nava','NAVA',this)">☆</button></div>
-            <div class="channel" onclick="load('nama','NAMA',this)"><span class="label">NAMA</span><button class="fav" onclick="toggleFav(event,'nama','NAMA',this)">☆</button></div>
-            <div class="channel" onclick="load('iribu','ROYA',this)"><span class="label">ROYA</span><button class="fav" onclick="toggleFav(event,'iribu','ROYA',this)">☆</button></div>
-            <div class="channel" onclick="load('ara','ARA',this)"><span class="label">ARA</span><button class="fav" onclick="toggleFav(event,'ara','ARA',this)">☆</button></div>
-            <div class="channel" onclick="load('iraneman','IRANEMAN',this)"><span class="label">IRANEMAN</span><button class="fav" onclick="toggleFav(event,'iraneman','IRANEMAN',this)">☆</button></div>
-            <div class="channel" onclick="load('golkhane','GOLKHANE',this)"><span class="label">GOLKHANE</span><button class="fav" onclick="toggleFav(event,'golkhane','GOLKHANE',this)">☆</button></div>
-            <div class="channel" onclick="load('negarestan','NEGARESTAN',this)"><span class="label">NEGARESTAN</span><button class="fav" onclick="toggleFav(event,'negarestan','NEGARESTAN',this)">☆</button></div>
-            <div class="channel" onclick="load('karoon','KAROON',this)"><span class="label">KAROON</span><button class="fav" onclick="toggleFav(event,'karoon','KAROON',this)">☆</button></div>
-            <div class="channel" onclick="load('sport3','TELEWEBION',this)"><span class="label">TELEWEBION</span><button class="fav" onclick="toggleFav(event,'sport3','TELEWEBION',this)">☆</button></div>
-            <div class="channel" onclick="load('sport1','TELEWEBION1',this)"><span class="label">TELEWEBION1</span><button class="fav" onclick="toggleFav(event,'sport1','TELEWEBION1',this)">☆</button></div>
-            <div class="channel" onclick="load('sport3','TELEWEBION2',this)"><span class="label">TELEWEBION2</span><button class="fav" onclick="toggleFav(event,'sport3','TELEWEBION2',this)">☆</button></div>
-            <div class="channel" onclick="load('parseh','PARSEH',this)"><span class="label">PARSEH</span><button class="fav" onclick="toggleFav(event,'parseh','PARSEH',this)">☆</button></div>
-            <div class="channel" onclick="load('nesfejahan','NESFEJAHAN',this)"><span class="label">NESFEJAHAN</span><button class="fav" onclick="toggleFav(event,'nesfejahan','NESFEJAHAN',this)">☆</button></div>
-            <div class="channel" onclick="load('sarbedaran','SARBEDARAN',this)"><span class="label">SARBEDARAN</span><button class="fav" onclick="toggleFav(event,'sarbedaran','SARBEDARAN',this)">☆</button></div>
-        </div>
-
-        <div class="section" id="regionalSection">
-            <h3>Regionala Kanaler</h3>
-            <div class="channel" onclick="load('mahabad','MAHABAD',this)"><span class="label">MAHABAD</span><button class="fav" onclick="toggleFav(event,'mahabad','MAHABAD',this)">☆</button></div>
-            <div class="channel" onclick="load('kordestan','KORDESTAN',this)"><span class="label">KORDESTAN</span><button class="fav" onclick="toggleFav(event,'kordestan','KORDESTAN',this)">☆</button></div>
-            <div class="channel" onclick="load('zagros','KERMANSHAH',this)"><span class="label">KERMANSHAH</span><button class="fav" onclick="toggleFav(event,'zagros','KERMANSHAH',this)">☆</button></div>
-            <div class="channel" onclick="load('ilam','ILAM',this)"><span class="label">ILAM</span><button class="fav" onclick="toggleFav(event,'ilam','ILAM',this)">☆</button></div>
-            <div class="channel" onclick="load('bushehr','BOOSHEHR',this)"><span class="label">BOOSHEHR</span><button class="fav" onclick="toggleFav(event,'bushehr','BOOSHEHR',this)">☆</button></div>
-            <div class="channel" onclick="load('abadan','ABADAN',this)"><span class="label">ABADAN</span><button class="fav" onclick="toggleFav(event,'abadan','ABADAN',this)">☆</button></div>
-            <div class="channel" onclick="load('khalijefars','BANDARABBAS',this)"><span class="label">BANDARABBAS</span><button class="fav" onclick="toggleFav(event,'khalijefars','BANDARABBAS',this)">☆</button></div>
-            <div class="channel" onclick="load('khoozestan','AHVAZ',this)"><span class="label">AHVAZ</span><button class="fav" onclick="toggleFav(event,'khoozestan','AHVAZ',this)">☆</button></div>
-            <div class="channel" onclick="load('kish','KISH',this)"><span class="label">KISH</span><button class="fav" onclick="toggleFav(event,'kish','KISH',this)">☆</button></div>
-            <div class="channel" onclick="load('hamoon','ZAHEDAN',this)"><span class="label">ZAHEDAN</span><button class="fav" onclick="toggleFav(event,'hamoon','ZAHEDAN',this)">☆</button></div>
-            <div class="channel" onclick="load('alborz','ALBORZ',this)"><span class="label">ALBORZ</span><button class="fav" onclick="toggleFav(event,'alborz','ALBORZ',this)">☆</button></div>
-            <div class="channel" onclick="load('aftab','ARAK',this)"><span class="label">ARAK</span><button class="fav" onclick="toggleFav(event,'aftab','ARAK',this)">☆</button></div>
-            <div class="channel" onclick="load('semnan','SEMNAN',this)"><span class="label">SEMNAN</span><button class="fav" onclick="toggleFav(event,'semnan','SEMNAN',this)">☆</button></div>
-            <div class="channel" onclick="load('noor','QOM',this)"><span class="label">QOM</span><button class="fav" onclick="toggleFav(event,'noor','QOM',this)">☆</button></div>
-            <div class="channel" onclick="load('qazvin','QAZVIN',this)"><span class="label">QAZVIN</span><button class="fav" onclick="toggleFav(event,'qazvin','QAZVIN',this)">☆</button></div>
-            <div class="channel" onclick="load('jahanbin','4Mahalebakhtiari',this)"><span class="label">4Mahalebakhtiari</span><button class="fav" onclick="toggleFav(event,'jahanbin','4Mahalebakhtiari',this)">☆</button></div>
-            <div class="channel" onclick="load('sina','HAMADAN',this)"><span class="label">HAMADAN</span><button class="fav" onclick="toggleFav(event,'sina','HAMADAN',this)">☆</button></div>
-            <div class="channel" onclick="load('aflak','LORESTAN',this)"><span class="label">LORESTAN</span><button class="fav" onclick="toggleFav(event,'aflak','LORESTAN',this)">☆</button></div>
-            <div class="channel" onclick="load('kerman','KERMAN',this)"><span class="label">KERMAN</span><button class="fav" onclick="toggleFav(event,'kerman','KERMAN',this)">☆</button></div>
-            <div class="channel" onclick="load('esfahan','ESFEHAN',this)"><span class="label">ESFEHAN</span><button class="fav" onclick="toggleFav(event,'esfahan','ESFEHAN',this)">☆</button></div>
-            <div class="channel" onclick="load('fars','FARS',this)"><span class="label">FARS</span><button class="fav" onclick="toggleFav(event,'fars','FARS',this)">☆</button></div>
-            <div class="channel" onclick="load('taban','YAZD',this)"><span class="label">YAZD</span><button class="fav" onclick="toggleFav(event,'taban','YAZD',this)">☆</button></div>
-            <div class="channel" onclick="load('dena','YASOOJ',this)"><span class="label">YASOOJ</span><button class="fav" onclick="toggleFav(event,'dena','YASOOJ',this)">☆</button></div>
-            <div class="channel" onclick="load('khavaran','KH.JONOBI',this)"><span class="label">KH.JONOBI</span><button class="fav" onclick="toggleFav(event,'khavaran','KH.JONOBI',this)">☆</button></div>
-            <div class="channel" onclick="load('atrak','KH.SHOMALI',this)"><span class="label">KK.SHOMALI</span><button class="fav" onclick="toggleFav(event,'atrak','KH.SHOMALI',this)">☆</button></div>
-            <div class="channel" onclick="load('khorasanrazavi','KH.RAZAVI',this)"><span class="label">KK.RAZAVI</span><button class="fav" onclick="toggleFav(event,'khorasanrazavi','KH.RAZAVI',this)">☆</button></div>
-            <div class="channel" onclick="load('sabz','GORGAN',this)"><span class="label">GORGAN</span><button class="fav" onclick="toggleFav(event,'sabz','GORGAN',this)">☆</button></div>
-            <div class="channel" onclick="load('tabarestan','MAZANDARAN',this)"><span class="label">MAZANDARAN</span><button class="fav" onclick="toggleFav(event,'tabarestan','MAZANDARAN',this)">☆</button></div>
-            <div class="channel" onclick="load('baran','GILAN',this)"><span class="label">GILAN</span><button class="fav" onclick="toggleFav(event,'baran','GILAN',this)">☆</button></div>
-            <div class="channel" onclick="load('sabalan','ARDABIL',this)"><span class="label">ARDABIL</span><button class="fav" onclick="toggleFav(event,'sabalan','ARDABIL',this)">☆</button></div>
-            <div class="channel" onclick="load('sahand','TABRIZ',this)"><span class="label">TABRIZ</span><button class="fav" onclick="toggleFav(event,'sahand','TABRIZ',this)">☆</button></div>
-            <div class="channel" onclick="load('azarbayjangharbi','URMIA',this)"><span class="label">URMIA</span><button class="fav" onclick="toggleFav(event,'azarbayjangharbi','URMIA',this)">☆</button></div>
-            <div class="channel" onclick="load('eshragh','ZANJAN',this)"><span class="label">ZANJAN</span><button class="fav" onclick="toggleFav(event,'eshragh','ZANJAN',this)">☆</button></div>
-        </div>
+    <div class="card-face card-back" id="cardBack">
+      <span class="topic-badge" id="backBadge">SCIENCE</span>
+      <div class="card-answer" id="backAnswer">Loading...</div>
+      <img class="card-image" id="backImage" src="" alt="" style="display:none;">
+      <div class="star-rating">
+        <span class="star" onclick="rateCard(1)">★</span>
+        <span class="star" onclick="rateCard(2)">★</span>
+        <span class="star" onclick="rateCard(3)">★</span>
+        <span class="star" onclick="rateCard(4)">★</span>
+        <span class="star" onclick="rateCard(5)">★</span>
+      </div>
     </div>
+  </div>
+</div>
+
+<p class="card-counter" id="cardCounter">1 / 40</p>
+
+<div class="quick-ref" id="quickRef">
+  <h2 id="quickTitle">📘 QUICK REFERENCE · 2-Minute Summary</h2>
+  <div class="quick-grid" id="quickGrid"></div>
 </div>
 
 <script>
-    const FAV_KEY = 'xom_favs';
-    let activeBtn = null;
-    let pipActive = false;
+// --------------------------------------------------------------
+// DATA: Bilingual cards (English + Swedish) - NO external images!
+// --------------------------------------------------------------
+const cardData = [
+  // SCIENCE
+  {
+    topic: "science",
+    en: { question: "What is the difference between hypothesis, theory, and law?", answer: `<strong>Hypothesis</strong> = a testable guess.<br><strong>Theory</strong> = confirmed explanation.<br><strong>Law</strong> = always works in nature.<br><br>Order: Hypothesis → Theory → Law` },
+    sv: { question: "Vad är skillnaden mellan hypotes, teori och lag?", answer: `<strong>Hypotes</strong> = testbar gissning.<br><strong>Teori</strong> = bekräftad förklaring.<br><strong>Lag</strong> = alltid sant i naturen.<br><br>Ordning: Hypotes → Teori → Lag` },
+    image: ""
+  },
+  {
+    topic: "science",
+    en: { question: "What does IMRaD mean?", answer: `<strong>I</strong>ntroduction, <strong>M</strong>ethod, <strong>R</strong>esults, <strong>a</strong>nd <strong>D</strong>iscussion.<br>Standard structure for scientific articles.` },
+    sv: { question: "Vad betyder IMRaD?", answer: `<strong>I</strong>ntroduktion, <strong>M</strong>etod, <strong>R</strong>esultat, <strong>a</strong>nd <strong>D</strong>iskussion.<br>Standardstruktur för vetenskapliga artiklar.` },
+    image: ""
+  },
+  {
+    topic: "science",
+    en: { question: "What are validity and reliability?", answer: `<strong>Validity</strong> = measures what it should.<br><strong>Reliability</strong> = consistent results.<br>Both needed for good research.` },
+    sv: { question: "Vad är validitet och reliabilitet?", answer: `<strong>Validitet</strong> = mäter rätt sak.<br><strong>Reliabilitet</strong> = konsekventa resultat.<br>Båda behövs för bra forskning.` },
+    image: ""
+  },
+  {
+    topic: "science",
+    en: { question: "Induction vs Deduction?", answer: `<strong>Induction</strong> = specific → general (guess).<br><strong>Deduction</strong> = general → specific (logical).` },
+    sv: { question: "Induktion vs Deduktion?", answer: `<strong>Induktion</strong> = specifikt → allmänt (gissning).<br><strong>Deduktion</strong> = allmänt → specifikt (logiskt).` },
+    image: ""
+  },
+  {
+    topic: "science",
+    en: { question: "What is a pilot study?", answer: `A small test-study before the main study.<br>Tests method, finds problems, saves time and money.` },
+    sv: { question: "Vad är en pilotstudie?", answer: `En liten test-undersökning före huvudstudien.<br>Testar metod, hittar problem, sparar tid och pengar.` },
+    image: ""
+  },
+  // CELL
+  {
+    topic: "cell",
+    en: { question: "What parts are in a eukaryotic cell?", answer: `<strong>Nucleus</strong> (DNA), <strong>mitochondria</strong> (energy), <strong>ribosomes</strong> (proteins), <strong>ER</strong>, <strong>Golgi</strong>, <strong>membrane</strong>, <strong>lysosomes</strong>, <strong>vacuoles</strong>.<br>Plant cells also have cell wall and chloroplasts.` },
+    sv: { question: "Vilka delar finns i en eukaryot cell?", answer: `<strong>Cellkärna</strong> (DNA), <strong>mitokondrier</strong> (energi), <strong>ribosomer</strong> (proteiner), <strong>ER</strong>, <strong>Golgi</strong>, <strong>membran</strong>, <strong>lysosomer</strong>, <strong>vakuoler</strong>.<br>Växtceller har även cellvägg och kloroplaster.` },
+    image: ""
+  },
+  {
+    topic: "cell",
+    en: { question: "Prokaryote vs Eukaryote?", answer: `<strong>Prokaryote:</strong> no nucleus, no organelles, small (bacteria).<br><strong>Eukaryote:</strong> has nucleus + organelles, large (animals, plants).` },
+    sv: { question: "Prokaryot vs Eukaryot?", answer: `<strong>Prokaryot:</strong> ingen kärna, inga organeller, små (bakterier).<br><strong>Eukaryot:</strong> har kärna + organeller, stora (djur, växter).` },
+    image: ""
+  },
+  {
+    topic: "cell",
+    en: { question: "What is a virus?", answer: `<strong>Not a cell.</strong> Has capsid + DNA/RNA. Needs host to replicate.<br>Bacteriophages look like tiny robots.` },
+    sv: { question: "Vad är ett virus?", answer: `<strong>Inte en cell.</strong> Har kapsid + DNA/RNA. Behöver värdcell för att föröka sig.<br>Bakteriofager ser ut som små robotar.` },
+    image: ""
+  },
+  {
+    topic: "cell",
+    en: { question: "What is the cell cycle?", answer: `G1 (growth) → S (DNA copy) → G2 (prep) → M (mitosis).<br>Mitosis: prophase, metaphase, anaphase, telophase.` },
+    sv: { question: "Vad är cellcykeln?", answer: `G1 (tillväxt) → S (DNA-kopia) → G2 (förberedelse) → M (mitos).<br>Mitos: profas, metafas, anafas, telofas.` },
+    image: ""
+  },
+  {
+    topic: "cell",
+    en: { question: "Mitosis vs Meiosis?", answer: `<strong>Mitosis:</strong> 1 division, 2 diploid cells, growth/repair.<br><strong>Meiosis:</strong> 2 divisions, 4 haploid cells, makes gametes.` },
+    sv: { question: "Mitos vs Meios?", answer: `<strong>Mitos:</strong> 1 delning, 2 diploida celler, tillväxt/reparation.<br><strong>Meios:</strong> 2 delningar, 4 haploida celler, bildar könsceller.` },
+    image: ""
+  },
+  {
+    topic: "cell",
+    en: { question: "How do bacteria exchange DNA?", answer: `Transformation (uptake from environment), Conjugation (direct transfer), Transduction (via virus).` },
+    sv: { question: "Hur byter bakterier DNA?", answer: `Transformation (upptag från miljön), Konjugation (direkt överföring), Transduktion (via virus).` },
+    image: ""
+  },
+  {
+    topic: "cell",
+    en: { question: "How is DNA copied?", answer: `Helicase unwinds, polymerase builds new strands (A-T, C-G), ligase glues pieces.<br>Semi-conservative: each new DNA has one old and one new strand.` },
+    sv: { question: "Hur kopieras DNA?", answer: `Helikas öppnar, polymeras bygger nya strängar (A-T, C-G), ligas klistrar ihop.<br>Semikonservativ: varje ny DNA har en gammal och en ny sträng.` },
+    image: ""
+  },
+  // GENETICS
+  {
+    topic: "genetics",
+    en: { question: "Gene, allele, genotype, phenotype?", answer: `<strong>Gene</strong> = DNA piece for a trait.<br><strong>Allele</strong> = variant (B/b).<br><strong>Genotype</strong> = alleles (Bb).<br><strong>Phenotype</strong> = visible (brown eyes).` },
+    sv: { question: "Gen, allel, genotyp, fenotyp?", answer: `<strong>Gen</strong> = DNA-bit för en egenskap.<br><strong>Allel</strong> = variant (B/b).<br><strong>Genotyp</strong> = alleler (Bb).<br><strong>Fenotyp</strong> = synligt (bruna ögon).` },
+    image: ""
+  },
+  {
+    topic: "genetics",
+    en: { question: "How does a Punnett square work?", answer: `Bb × Bb → 25% BB, 50% Bb, 25% bb.<br>Phenotype: 3 brown : 1 blue.` },
+    sv: { question: "Hur fungerar ett korsningsschema?", answer: `Bb × Bb → 25% BB, 50% Bb, 25% bb.<br>Fenotyp: 3 bruna : 1 blå.` },
+    image: ""
+  },
+  {
+    topic: "genetics",
+    en: { question: "Why don't recessive genes disappear?", answer: `Recessive genes can be hidden in carriers (Bb).<br>Two carriers can have affected children (bb).` },
+    sv: { question: "Varför försvinner inte recessiva gener?", answer: `Recessiva gener kan vara dolda hos bärare (Bb).<br>Två bärare kan få barn med egenskapen (bb).` },
+    image: ""
+  },
+  {
+    topic: "genetics",
+    en: { question: "DNA vs RNA?", answer: `<strong>DNA:</strong> double, deoxyribose, T, stores info.<br><strong>RNA:</strong> single, ribose, U, messenger.` },
+    sv: { question: "DNA vs RNA?", answer: `<strong>DNA:</strong> dubbel, deoxiribos, T, lagrar info.<br><strong>RNA:</strong> enkel, ribos, U, budbärare.` },
+    image: ""
+  },
+  {
+    topic: "genetics",
+    en: { question: "How are proteins built?", answer: `<strong>Transcription:</strong> DNA → mRNA.<br><strong>Translation:</strong> mRNA → protein (ribosomes read codons, tRNA brings amino acids).` },
+    sv: { question: "Hur byggs proteiner?", answer: `<strong>Transkription:</strong> DNA → mRNA.<br><strong>Translation:</strong> mRNA → protein (ribosomer läser kodon, tRNA bär aminosyror).` },
+    image: ""
+  },
+  {
+    topic: "genetics",
+    en: { question: "What are mutations?", answer: `Point mutation (substitution), Insertion (adds base), Deletion (removes base).<br>Insertion/Deletion cause frameshift → serious.` },
+    sv: { question: "Vad är mutationer?", answer: `Punktmutation (substitution), Insertion (lägger till), Deletion (tar bort).<br>Insertion/Deletion orsakar läsramsförskjutning → allvarligt.` },
+    image: ""
+  },
+  {
+    topic: "genetics",
+    en: { question: "What is epigenetics?", answer: `Changes in gene expression WITHOUT changing DNA.<br>Affected by stress, diet, environment.<br>Can be inherited.` },
+    sv: { question: "Vad är epigenetik?", answer: `Förändringar i genuttryck UTAN att DNA ändras.<br>Påverkas av stress, kost, miljö.<br>Kan ärvas.` },
+    image: ""
+  },
+  {
+    topic: "genetics",
+    en: { question: "What is Hardy-Weinberg law?", answer: `Allele frequencies stay constant if no evolution.<br>Conditions: large population, random mating, no migration, no mutation, no selection.<br>p² + 2pq + q² = 1` },
+    sv: { question: "Vad är Hardy-Weinbergs lag?", answer: `Allel-frekvenser förblir konstanta om ingen evolution sker.<br>Villkor: stor population, slumpmässig parning, ingen migration, mutation eller selektion.<br>p² + 2pq + q² = 1` },
+    image: ""
+  },
+  // EVOLUTION
+  {
+    topic: "evolution",
+    en: { question: "What is natural selection?", answer: `"Survival of the fittest."<br>Variation + overproduction + differential survival.<br>Example: Darwin's finches.` },
+    sv: { question: "Vad är naturligt urval?", answer: `"De bäst anpassade överlever."<br>Variation + överproduktion + olika överlevnad.<br>Exempel: Darwinfinkar.` },
+    image: ""
+  },
+  {
+    topic: "evolution",
+    en: { question: "What is convergent evolution?", answer: `Unrelated species develop similar traits due to similar environments.<br>Examples: wings, cactus-like plants, eyes.` },
+    sv: { question: "Vad är konvergent evolution?", answer: `Olikartade arter utvecklar liknande egenskaper pga liknande miljöer.<br>Exempel: vingar, kaktusliknande växter, ögon.` },
+    image: ""
+  },
+  {
+    topic: "evolution",
+    en: { question: "What is selection pressure?", answer: `Environmental factor that makes some traits advantageous.<br>Examples: predators, drought, climate change.` },
+    sv: { question: "Vad är selektionstryck?", answer: `Miljöfaktor som gör vissa egenskaper fördelaktiga.<br>Exempel: rovdjur, torka, klimatförändring.` },
+    image: ""
+  },
+  {
+    topic: "evolution",
+    en: { question: "Sexual selection & fitness?", answer: `<strong>Sexual selection:</strong> competition for mates.<br><strong>Fitness:</strong> ability to pass on genes.<br>Peacock tail = sexual selection.` },
+    sv: { question: "Sexuell selektion & fitness?", answer: `<strong>Sexuell selektion:</strong> konkurrens om partner.<br><strong>Fitness:</strong> förmåga att föra gener vidare.<br>Påfågelstjärt = sexuell selektion.` },
+    image: ""
+  },
+  {
+    topic: "evolution",
+    en: { question: "What is speciation?", answer: `<strong>Allopatric:</strong> geographic barrier.<br><strong>Sympatric:</strong> same place, no barrier.<br><strong>Peripatric:</strong> small group moves to new area.` },
+    sv: { question: "Vad är artbildning?", answer: `<strong>Allopatrisk:</strong> geografisk barriär.<br><strong>Sympatrisk:</strong> samma plats, ingen barriär.<br><strong>Peripatrisk:</strong> liten grupp flyttar till nytt område.` },
+    image: ""
+  },
+  {
+    topic: "evolution",
+    en: { question: "What is endosymbiotic theory?", answer: `Mitochondria and chloroplasts were once free-living bacteria that were engulfed by larger cells.<br>Evidence: own DNA, double membranes, divide like bacteria.` },
+    sv: { question: "Vad är endosymbiontteorin?", answer: `Mitokondrier och kloroplaster var en gång frilevande bakterier som slukades av större celler.<br>Bevis: eget DNA, dubbla membran, delar sig som bakterier.` },
+    image: ""
+  },
+  {
+    topic: "evolution",
+    en: { question: "What is LUCA?", answer: `Last Universal Common Ancestor.<br>Bacteria, Archaea, and Eukaryotes all share the same origin.<br>Eukaryotes are within Archaea.` },
+    sv: { question: "Vad är LUCA?", answer: `Last Universal Common Ancestor (sista gemensamma förfader).<br>Bakterier, arkéer och eukaryoter delar samma ursprung.<br>Eukaryoter är inom arkéerna.` },
+    image: ""
+  },
+  // ECOLOGY
+  {
+    topic: "ecology",
+    en: { question: "Ecosystem, population, community?", answer: `<strong>Ecosystem</strong> = living + non-living.<br><strong>Population</strong> = same species.<br><strong>Community</strong> = all populations.<br><strong>Habitat</strong> = place, <strong>niche</strong> = role.` },
+    sv: { question: "Ekosystem, population, samhälle?", answer: `<strong>Ekosystem</strong> = levande + icke-levande.<br><strong>Population</strong> = samma art.<br><strong>Samhälle</strong> = alla populationer.<br><strong>Habitat</strong> = plats, <strong>nisch</strong> = roll.` },
+    image: ""
+  },
+  {
+    topic: "ecology",
+    en: { question: "Food chain and energy pyramid?", answer: `Producer → primary → secondary → tertiary → decomposer.<br>90% energy lost per level → only 10% moves up.` },
+    sv: { question: "Näringskedja och energipyramid?", answer: `Producent → primärkonsument → sekundärkonsument → tertiärkonsument → nedbrytare.<br>90% energi förloras per nivå → bara 10% går vidare.` },
+    image: ""
+  },
+  {
+    topic: "ecology",
+    en: { question: "Types of symbiosis?", answer: `<strong>Mutualism:</strong> both benefit.<br><strong>Commensalism:</strong> one benefits, other unaffected.<br><strong>Parasitism:</strong> one benefits, one harmed.` },
+    sv: { question: "Typer av samlevnad?", answer: `<strong>Mutualism:</strong> båda gynnas.<br><strong>Kommensalism:</strong> en gynnas, andra opåverkad.<br><strong>Parasitism:</strong> en gynnas, en skadas.` },
+    image: ""
+  },
+  {
+    topic: "ecology",
+    en: { question: "Resilience and threshold values?", answer: `<strong>Resilience:</strong> ability to recover after disturbance.<br><strong>Threshold:</strong> limit where recovery is no longer possible.<br>High biodiversity = higher resilience.` },
+    sv: { question: "Resiliens och tröskelvärden?", answer: `<strong>Resiliens:</strong> förmåga att återhämta sig.<br><strong>Tröskelvärde:</strong> gräns där återhämtning inte är möjlig.<br>Hög biodiversitet = högre resiliens.` },
+    image: ""
+  },
+  {
+    topic: "ecology",
+    en: { question: "What are ecosystem services?", answer: `Benefits humans get from nature: provisioning (food, water), regulating (climate, pollination), cultural (recreation), supporting (nutrient cycles).` },
+    sv: { question: "Vad är ekosystemtjänster?", answer: `Fördelar människan får från naturen: försörjning (mat, vatten), reglering (klimat, pollinering), kulturella (rekreation), stödjande (näringscykler).` },
+    image: ""
+  },
+  {
+    topic: "ecology",
+    en: { question: "Proximate vs Ultimate explanations?", answer: `<strong>Proximate:</strong> HOW does it work? (mechanism)<br><strong>Ultimate:</strong> WHY does it exist? (evolutionary function)` },
+    sv: { question: "Proximal vs Ultimat förklaring?", answer: `<strong>Proximal:</strong> HUR fungerar det? (mekanism)<br><strong>Ultimat:</strong> VARFÖR finns det? (evolutionär funktion)` },
+    image: ""
+  },
+  // HUMAN
+  {
+    topic: "human",
+    en: { question: "How does digestion work?", answer: `Mouth (amylase) → esophagus → stomach (acid, pepsin) → small intestine (bile, villi) → large intestine (water).` },
+    sv: { question: "Hur fungerar matspjälkning?", answer: `Mun (amylas) → matstrupe → magsäck (syra, pepsin) → tunntarm (galla, tarmludd) → tjocktarm (vatten).` },
+    image: ""
+  },
+  {
+    topic: "human",
+    en: { question: "How does breathing work?", answer: `Air → nose/mouth → trachea → bronchi → alveoli.<br>O2 diffuses into blood, CO2 out.<br>Diaphragm contracts → inhale.` },
+    sv: { question: "Hur fungerar andning?", answer: `Luft → näsa/mun → luftstrupe → bronker → alveoler.<br>O2 diffunderar in i blodet, CO2 ut.<br>Diafragman drar ihop sig → inandning.` },
+    image: ""
+  },
+  {
+    topic: "human",
+    en: { question: "How is the heart built?", answer: `4 chambers: right atrium, right ventricle, left atrium, left ventricle.<br>Pulmonary circuit (lungs) + systemic circuit (body).` },
+    sv: { question: "Hur är hjärtat uppbyggt?", answer: `4 rum: höger förmak, höger kammare, vänster förmak, vänster kammare.<br>Lilla kretsloppet (lungor) + stora kretsloppet (kroppen).` },
+    image: ""
+  },
+  {
+    topic: "human",
+    en: { question: "How do the kidneys work?", answer: `Nephrons filter blood: Bowman's capsule → tubule (reabsorption) → excretion.<br>180L primary urine → 0.5-2L secondary urine.` },
+    sv: { question: "Hur fungerar njurarna?", answer: `Nefron filtrerar blod: Bowmans kapsel → tubulus (återupptagning) → utsöndring.<br>180L primärurin → 0,5-2L sekundärurin.` },
+    image: ""
+  },
+  {
+    topic: "human",
+    en: { question: "How does the menstrual cycle work?", answer: `~28 days: FSH → follicle matures, estrogen builds lining.<br>Ovulation (LH spike) → corpus luteum produces progesterone.<br>If no fertilization → menstruation.` },
+    sv: { question: "Hur fungerar menstruationscykeln?", answer: `~28 dagar: FSH → follikel mognar, östrogen bygger slemhinna.<br>Ägglossning (LH-topp) → gulkropp producerar progesteron.<br>Om ingen befruktning → mens.` },
+    image: ""
+  },
+  {
+    topic: "human",
+    en: { question: "Reproductive organs & sperm production?", answer: `Female: ovaries, fallopian tubes, uterus, vagina.<br>Male: testes (sperm + testosterone), epididymis, vas deferens, prostate.<br>Spermatogenesis: stem cell → mitosis → meiosis → 4 sperm.` },
+    sv: { question: "Könsorgan & spermiebildning?", answer: `Hona: äggstockar, äggledare, livmoder, slida.<br>Hane: testiklar (spermier + testosteron), bitestiklar, sädesledare, prostata.<br>Spermatogenes: stamcell → mitos → meios → 4 spermier.` },
+    image: ""
+  },
+  {
+    topic: "human",
+    en: { question: "What happens after fertilization?", answer: `Zygote → morula → blastocyst (day 5-6) → implantation (day 6-7).<br>Gastrulation → 3 germ layers: ectoderm, mesoderm, endoderm.<br>Week 3-8: embryo.` },
+    sv: { question: "Vad händer efter befruktning?", answer: `Zygot → morula → blastocyst (dag 5-6) → implantation (dag 6-7).<br>Gastrulation → 3 groddlager: ektoderm, mesoderm, endoderm.<br>Vecka 3-8: embryo.` },
+    image: ""
+  }
+];
 
-    function getFavs() {
-        try {
-            const v = localStorage.getItem(FAV_KEY);
-            return v ? JSON.parse(v) : [];
-        } catch (e) {
-            return [];
-        }
-    }
-    function saveFavs(arr) {
-        localStorage.setItem(FAV_KEY, JSON.stringify(arr));
-    }
-    function isFav(id) {
-        return getFavs().indexOf(id) !== -1;
-    }
+// Quick reference (bilingual)
+const quickRefData = {
+  en: [
+    { title: "Scientific Method", items: "Hypothesis = testable guess<br>Theory = confirmed explanation<br>Falsifiability = must be disprovable<br>IMRaD = Intro, Method, Results, Discussion<br>Validity = measures right thing<br>Reliability = consistent" },
+    { title: "The Cell", items: "Prokaryote = no nucleus (bacteria)<br>Eukaryote = has nucleus + organelles<br>Virus = not a cell<br>Cell cycle = G1→S→G2→M<br>Mitosis = body cell division<br>Meiosis = sex cell division" },
+    { title: "Genetics", items: "Gene = DNA piece for protein<br>Allele = gene variant (B/b)<br>Dominant = covers recessive<br>Genotype = genetic makeup<br>Phenotype = visible result<br>DNA replication = helicase→polymerase→ligase" },
+    { title: "Evolution", items: "Natural selection = best adapted survive<br>Selection pressure = environmental factor<br>Convergent evolution = similar traits, different origins<br>Endosymbiotic theory = mitochondria were bacteria<br>Speciation = allopatric, sympatric, peripatric" },
+    { title: "Ecology", items: "Ecosystem = living + abiotic<br>Food chain = prod→cons→decomposers<br>Energy pyramid = 90% lost per level<br>Resilience = recovery ability<br>Mutualism = both benefit<br>Parasitism = one benefits, one harmed" },
+    { title: "Human Body", items: "Digestion = mouth→stomach→small intestine→large intestine<br>Breathing = alveoli, diffusion O2/CO2<br>Heart = 4 chambers, 2 circuits<br>Kidneys = nephron filters blood<br>Menstrual cycle = ~28 days, FSH→LH→progesterone" }
+  ],
+  sv: [
+    { title: "Vetenskapsteori", items: "Hypotes = testbart påstående<br>Teori = bekräftad förklaring<br>Falsifierbarhet = måste gå att motbevisa<br>IMRaD = Intro, Metod, Resultat, Diskussion<br>Validitet = mäter rätt sak<br>Reliabilitet = konsekvent" },
+    { title: "Cellen", items: "Prokaryot = ingen kärna (bakterier)<br>Eukaryot = har kärna + organeller<br>Virus = ej cell<br>Cellcykeln = G1→S→G2→M<br>Mitos = kroppscelldelning<br>Meios = könscellsdelning" },
+    { title: "Genetik", items: "Gen = DNA-bit för protein<br>Allel = variant (B/b)<br>Dominant = täcker recessiv<br>Genotyp = arvsmassa<br>Fenotyp = synligt resultat<br>DNA-replikation = helikas→polymeras→ligas" },
+    { title: "Evolution", items: "Naturligt urval = bäst anpassade överlever<br>Selektionstryck = miljöfaktor<br>Konvergent evolution = liknande egenskaper, olika ursprung<br>Endosymbiontteorin = mitokondrier var bakterier<br>Artbildning = allopatrisk, sympatrisk, peripatrisk" },
+    { title: "Ekologi", items: "Ekosystem = levande + abiotiskt<br>Näringskedja = prod→kons→nedbrytare<br>Energipyramid = 90% förloras per nivå<br>Resiliens = återhämtningsförmåga<br>Mutualism = båda gynnas<br>Parasitism = en gynnas, en skadas" },
+    { title: "Människan", items: "Matspjälkning = mun→magsäck→tunntarm→tjocktarm<br>Andning = alveoler, diffusion O2/CO2<br>Hjärta = 4 rum, 2 kretslopp<br>Njurar = nefron filtrerar blod<br>Menstruationscykeln = ~28 dagar, FSH→LH→progesteron" }
+  ]
+};
 
-    function toggleFav(event, id, name, btn) {
-        event.stopPropagation();
-        const favs = getFavs();
-        const idx = favs.indexOf(id);
-        if (idx === -1) {
-            favs.push(id);
-        } else {
-            favs.splice(idx,1);
-        }
-        saveFavs(favs);
-        updateStarButtons();
-        refreshFavoritesList();
-    }
+// --------------------------------------------------------------
+// STATE
+// --------------------------------------------------------------
+let currentLang = 'en';
+let currentIndex = 0;
+let filteredCards = [...cardData];
+let cardRatings = new Array(cardData.length).fill(0);
+let currentFilter = 'all';
 
-    function updateStarButtons() {
-        document.querySelectorAll('.channel').forEach(ch => {
-            const b = ch.querySelector('.fav');
-            if (!b) return;
-            const id = ch.dataset.id || getIdFromOnclick(ch);
-            if (id && isFav(id)) {
-                b.textContent = '★';
-                b.classList.add('fav-active');
-            } else {
-                b.textContent = '☆';
-                b.classList.remove('fav-active');
-            }
-        });
-    }
+// --------------------------------------------------------------
+// DOM refs
+// --------------------------------------------------------------
+const flashcard = document.getElementById('flashcard');
+const frontBadge = document.getElementById('frontBadge');
+const backBadge = document.getElementById('backBadge');
+const frontQuestion = document.getElementById('frontQuestion');
+const backAnswer = document.getElementById('backAnswer');
+const frontImage = document.getElementById('frontImage');
+const backImage = document.getElementById('backImage');
+const cardCounter = document.getElementById('cardCounter');
+const progressFill = document.getElementById('progressFill');
+const hintBox = document.getElementById('hintBox');
+const quickGrid = document.getElementById('quickGrid');
+const mainTitle = document.getElementById('mainTitle');
+const subtitle = document.getElementById('subtitle');
 
-    function refreshFavoritesList() {
-        const list = document.getElementById('favoritesList');
-        const favs = getFavs();
-        if (!favs || favs.length === 0) {
-            list.textContent = 'Inga favoriter';
-            return;
-        }
-        list.innerHTML = '';
-        favs.forEach(id => {
-            let label = id;
-            const channelEl = Array.from(document.querySelectorAll('.channel')).find(ch => {
-                const chId = ch.dataset.id || getIdFromOnclick(ch);
-                return chId === id;
-            });
-            if (channelEl) {
-                label = channelEl.querySelector('.label')?.textContent.trim() || id;
-            }
-            const btn = document.createElement('button');
-            btn.textContent = label;
-            btn.style.display = 'block';
-            btn.style.width = '100%';
-            btn.style.margin = '6px 0';
-            btn.style.padding = '8px';
-            btn.style.borderRadius = '8px';
-            btn.style.border = 'none';
-            btn.style.background = '#4ecdc4';
-            btn.style.color = '#012';
-            btn.style.fontWeight = 'bold';
-            btn.style.fontSize = '0.9em';
-            btn.onclick = () => {
-                if (channelEl) channelEl.click();
-                else load(id, label, document.createElement('div'));
-                // Stäng sidebar på mobil efter val
-                if (window.innerWidth <= 900) {
-                    setTimeout(() => toggleSidebar(), 300);
-                }
-            };
-            list.appendChild(btn);
-        });
-    }
+// --------------------------------------------------------------
+// LANGUAGE STRINGS
+// --------------------------------------------------------------
+const langText = {
+  en: {
+    title: '🌱 Biology Level 1 · Flashcards',
+    subtitle: 'Click card to flip · Bilingual (EN/SV)',
+    hint: 'Click to see the answer',
+    filterAll: 'All',
+    filterScience: 'Science',
+    filterCell: 'Cell',
+    filterGenetics: 'Genetics',
+    filterEvolution: 'Evolution',
+    filterEcology: 'Ecology',
+    filterHuman: 'Human',
+    prev: 'Previous',
+    flip: 'Flip',
+    next: 'Next',
+    shuffle: 'Shuffle',
+    quickTitle: '📘 QUICK REFERENCE · 2-Minute Summary'
+  },
+  sv: {
+    title: '🌱 Biologi Nivå 1 · Flashcards',
+    subtitle: 'Klicka på kortet för att vända · Tvåspråkig (EN/SV)',
+    hint: 'Klicka för att se svaret',
+    filterAll: 'Alla',
+    filterScience: 'Vetenskap',
+    filterCell: 'Cell',
+    filterGenetics: 'Genetik',
+    filterEvolution: 'Evolution',
+    filterEcology: 'Ekologi',
+    filterHuman: 'Människan',
+    prev: 'Föregående',
+    flip: 'Vänd',
+    next: 'Nästa',
+    shuffle: 'Blanda',
+    quickTitle: '📘 SNABBREFERENS · 2-minuters sammanfattning'
+  }
+};
 
-    function getIdFromOnclick(ch) {
-        const onclickAttr = ch.getAttribute('onclick') || '';
-        const m = onclickAttr.match(/load\(['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]/);
-        return m ? m[1] : null;
-    }
-    function getNameFromOnclick(ch) {
-        const onclickAttr = ch.getAttribute('onclick') || '';
-        const m = onclickAttr.match(/load\(['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]/);
-        return m ? m[2] : null;
-    }
+// --------------------------------------------------------------
+// FUNCTIONS
+// --------------------------------------------------------------
+function setLanguage(lang) {
+  currentLang = lang;
+  document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+  document.getElementById('btnSv').classList.toggle('active', lang === 'sv');
+  
+  // Update UI texts
+  const t = langText[lang];
+  mainTitle.textContent = t.title;
+  subtitle.textContent = t.subtitle;
+  hintBox.textContent = t.hint;
+  document.getElementById('quickTitle').textContent = t.quickTitle;
+  
+  // Filter buttons
+  document.querySelectorAll('.btn-filter').forEach(btn => {
+    const key = btn.dataset.key;
+    if (key) btn.textContent = t[key];
+  });
+  document.querySelectorAll('.controls .btn:not(.btn-filter)').forEach(btn => {
+    const key = btn.dataset.key;
+    if (key) btn.textContent = t[key];
+  });
+  
+  // Quick reference
+  buildQuickRef(lang);
+  
+  // Update card content
+  updateCard();
+}
 
-    async function togglePictureInPicture(event) {
-        const player = document.getElementById('player');
-        const btn = event ? event.target : document.querySelector('.pip-btn');
-        
-        try {
-            if (document.pictureInPictureElement) {
-                // Avsluta PiP
-                await document.exitPictureInPicture();
-                pipActive = false;
-                btn.textContent = '📺 PiP';
-            } else {
-                // Starta PiP
-                await player.requestPictureInPicture();
-                pipActive = true;
-                btn.textContent = '🖥️ Normal';
-            }
-        } catch (e) {
-            // Fallback: öppna i nytt fönster som också uppdateras
-            window.open(player.src, '_blank');
-        }
-    }
-    
-    function toggleFullscreen() {
-        const player = document.getElementById('player');
-        if (player.requestFullscreen) {
-            player.requestFullscreen();
-        } else if (player.webkitRequestFullscreen) {
-            player.webkitRequestFullscreen();
-        } else if (player.mozRequestFullScreen) {
-            player.mozRequestFullScreen();
-        } else if (player.msRequestFullscreen) {
-            player.msRequestFullscreen();
-        }
-    }
+function buildQuickRef(lang) {
+  const data = quickRefData[lang];
+  quickGrid.innerHTML = '';
+  data.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'quick-item';
+    div.style.borderColor = '#ffd700';
+    div.innerHTML = `<h4>${item.title}</h4><p>${item.items}</p>`;
+    quickGrid.appendChild(div);
+  });
+}
 
-    function load(id, name, btn) {
-        const player = document.getElementById('player');
-        const nameEl = document.getElementById('channelName');
+function getCardText(card) {
+  return card[currentLang] || card.en; // fallback
+}
 
-        // Stark autoplay + tvinga reload för direkt uppspelning
-        const newSrc = `https://m.telewebion.com/embed/live/${id}?autoplay=1&mute=0&start=0&_=${Date.now()}`;
-        
-        // OM PiP är aktiv → uppdatera direkt i PiP-fönstret
-        if (pipActive && document.pictureInPictureElement) {
-            player.src = newSrc;
-            // Försök att tvinga reload i PiP-fönstret
-            try {
-                if (player.contentWindow && player.contentWindow.location) {
-                    player.contentWindow.location.replace(newSrc);
-                }
-            } catch (e) {
-                // Cross-origin error, fortsätt normalt
-                player.src = newSrc;
-                player.src = newSrc; // Dubbel set för att tvinga reload
-            }
-        } else {
-            player.src = newSrc;
-            player.src = newSrc; // Dubbel set för att tvinga reload
-        }
-        
-        nameEl.textContent = name;
+function updateCard() {
+  if (filteredCards.length === 0) {
+    frontQuestion.textContent = 'No cards match filter.';
+    backAnswer.textContent = 'Try another filter.';
+    cardCounter.textContent = '0 / 0';
+    progressFill.style.width = '0%';
+    frontImage.style.display = 'none';
+    backImage.style.display = 'none';
+    flashcard.classList.remove('flipped');
+    return;
+  }
+  
+  const card = filteredCards[currentIndex];
+  const text = getCardText(card);
+  
+  // Update badges
+  const topicMap = {
+    science: { en: 'SCIENCE', sv: 'VETENSKAP' },
+    cell: { en: 'CELL', sv: 'CELL' },
+    genetics: { en: 'GENETICS', sv: 'GENETIK' },
+    evolution: { en: 'EVOLUTION', sv: 'EVOLUTION' },
+    ecology: { en: 'ECOLOGY', sv: 'EKOLOGI' },
+    human: { en: 'HUMAN', sv: 'MANNISKAN' }
+  };
+  const badgeText = topicMap[card.topic]?.[currentLang] || card.topic.toUpperCase();
+  const badgeClass = 'badge-' + card.topic;
+  frontBadge.className = 'topic-badge ' + badgeClass;
+  frontBadge.textContent = badgeText;
+  backBadge.className = 'topic-badge ' + badgeClass;
+  backBadge.textContent = badgeText;
+  
+  // Update content
+  frontQuestion.textContent = text.question;
+  backAnswer.innerHTML = text.answer;
+  
+  // Images - all removed, hide them
+  frontImage.style.display = 'none';
+  backImage.style.display = 'none';
+  
+  // Topic class for border
+  flashcard.className = 'flashcard topic-' + card.topic;
+  document.getElementById('cardFront').className = 'card-face card-front topic-' + card.topic;
+  document.getElementById('cardBack').className = 'card-face card-back topic-' + card.topic;
+  
+  // Counter & progress
+  cardCounter.textContent = (currentIndex + 1) + ' / ' + filteredCards.length;
+  const progress = ((currentIndex + 1) / filteredCards.length) * 100;
+  progressFill.style.width = progress + '%';
+  
+  // Reset flip
+  flashcard.classList.remove('flipped');
+  
+  // Stars
+  updateStars();
+}
 
-        if (activeBtn) activeBtn.classList.remove('active');
-        const ch = (btn && btn.classList && btn.classList.contains('channel')) ? btn : (btn && btn.closest ? btn.closest('.channel') : null);
-        if (ch) {
-            ch.classList.add('active');
-            activeBtn = ch;
-            if (window.innerWidth <= 900) {
-                setTimeout(() => {
-                    ch.scrollIntoView({behavior: 'smooth', block: 'center'});
-                }, 300);
-            }
-        } else {
-            const found = Array.from(document.querySelectorAll('.channel')).find(c => (c.dataset.id || getIdFromOnclick(c)) === id);
-            if (found) {
-                found.classList.add('active');
-                activeBtn = found;
-                if (window.innerWidth <= 900) {
-                    setTimeout(() => {
-                        found.scrollIntoView({behavior: 'smooth', block: 'center'});
-                    }, 300);
-                }
-            }
-        }
-        
-        // Uppdatera meny-knappens text på mobil
-        if (window.innerWidth <= 900) {
-            const menuBtn = document.querySelector('.menu-toggle');
-            menuBtn.textContent = '✕ Stäng lista';
-        }
-    }
+function flipCard() {
+  flashcard.classList.toggle('flipped');
+}
 
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const playerArea = document.querySelector('.player-area');
-        const btn = document.querySelector('.menu-toggle');
-        const isMobile = window.innerWidth <= 900;
+function nextCard() {
+  if (filteredCards.length === 0) return;
+  currentIndex = (currentIndex + 1) % filteredCards.length;
+  updateCard();
+}
 
-        // OM gömd → visa
-        if (sidebar.style.display === 'none' || sidebar.style.display === '') {
-            sidebar.style.display = 'block';
-            if (isMobile) {
-                playerArea.style.height = '30vh';
-                btn.textContent = '✕ Stäng lista';
-                // Scrolla till aktiv kanal
-                if (activeBtn) {
-                    setTimeout(() => {
-                        activeBtn.scrollIntoView({behavior: 'smooth', block: 'center'});
-                    }, 100);
-                }
-            } else {
-                playerArea.style.height = 'auto';
-            }
-        } else {
-            // OM synlig → göm
-            sidebar.style.display = 'none';
-            if (isMobile) {
-                playerArea.style.height = '100vh';
-                btn.textContent = '📺 Visa kanaler';
-            }
-        }
-    }
+function prevCard() {
+  if (filteredCards.length === 0) return;
+  currentIndex = (currentIndex - 1 + filteredCards.length) % filteredCards.length;
+  updateCard();
+}
 
-    window.addEventListener('resize', function() {
-        const sidebar = document.getElementById('sidebar');
-        const playerArea = document.querySelector('.player-area');
-        const btn = document.querySelector('.menu-toggle');
-        const isMobile = window.innerWidth <= 900;
+function shuffleCards() {
+  for (let i = filteredCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [filteredCards[i], filteredCards[j]] = [filteredCards[j], filteredCards[i]];
+  }
+  currentIndex = 0;
+  updateCard();
+}
 
-        if (!isMobile) {
-            // Desktop: alltid visa sidebar
-            sidebar.style.display = 'block';
-            playerArea.style.height = 'auto';
-            btn.textContent = '≡';
-            btn.style.display = 'none';
-        } else {
-            // Mobil: visa eller dölj baserat på state
-            btn.style.display = 'inline-block';
-            if (sidebar.style.display === 'none' || sidebar.style.display === '') {
-                playerArea.style.height = '100vh';
-                btn.textContent = '📺 Visa kanaler';
-            } else {
-                playerArea.style.height = '30vh';
-                btn.textContent = '✕ Stäng lista';
-            }
-        }
-    });
+function filterCards(topic, btn) {
+  currentFilter = topic;
+  document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('filter-active'));
+  if (btn) btn.classList.add('filter-active');
+  
+  if (topic === 'all') {
+    filteredCards = [...cardData];
+  } else {
+    filteredCards = cardData.filter(c => c.topic === topic);
+  }
+  currentIndex = 0;
+  updateCard();
+}
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const channels = document.querySelectorAll('.channel');
-        channels.forEach(ch => {
-            const id = ch.dataset.id || getIdFromOnclick(ch);
-            const name = ch.dataset.name || getNameFromOnclick(ch) || ch.querySelector('.label')?.textContent?.trim();
-            if (id) ch.dataset.id = id;
-            if (name) ch.dataset.name = name;
-        });
+function rateCard(rating) {
+  cardRatings[currentIndex] = rating;
+  updateStars();
+}
 
-        updateStarButtons();
-        refreshFavoritesList();
+function updateStars() {
+  const stars = document.querySelectorAll('.star');
+  const rating = cardRatings[currentIndex] || 0;
+  stars.forEach((star, i) => {
+    star.classList.toggle('active', i < rating);
+  });
+}
 
-        const initial = document.querySelector('.channel.active');
-        if (initial) initial.click();
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === ' ' || e.key === 'Enter') flipCard();
+});
 
-        // På mobil: börja med stor spelare och gömd lista
-        if (window.innerWidth <= 900) {
-            const sidebar = document.getElementById('sidebar');
-            const playerArea = document.querySelector('.player-area');
-            const btn = document.querySelector('.menu-toggle');
-            sidebar.style.display = 'none';
-            playerArea.style.height = '100vh';
-            btn.textContent = '📺 Visa kanaler';
-            btn.style.display = 'inline-block';
-        } else {
-            // Desktop: dölj meny-knapp
-            document.querySelector('.menu-toggle').style.display = 'none';
-        }
-    });
-
-    // Stäng sidebar när man klickar utanför (på mobil)
-    document.addEventListener('click', function(event) {
-        const sidebar = document.getElementById('sidebar');
-        const menuBtn = document.querySelector('.menu-toggle');
-        const isMobile = window.innerWidth <= 900;
-        
-        if (isMobile && sidebar.style.display === 'block') {
-            // Kolla om klicket är utanför sidebar och inte på kanal eller meny-knapp
-            if (!sidebar.contains(event.target) && 
-                !menuBtn.contains(event.target) && 
-                !event.target.classList.contains('channel') &&
-                !event.target.closest('.channel')) {
-                toggleSidebar();
-            }
-        }
-    });
-
-    window.toggleFav = toggleFav;
-    window.load = load;
-    window.toggleSidebar = toggleSidebar;
-    window.togglePictureInPicture = togglePictureInPicture;
-    window.toggleFullscreen = toggleFullscreen;
+// --------------------------------------------------------------
+// INIT
+// --------------------------------------------------------------
+buildQuickRef('en');
+setLanguage('en');
 </script>
-
 </body>
 </html>
